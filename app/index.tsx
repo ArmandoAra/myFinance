@@ -1,0 +1,154 @@
+import { StyleSheet, StyleSheetProperties, Image, ActivityIndicator } from 'react-native';
+
+import ParallaxScrollView from '@/components/ParallaxScrollView';
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
+import { StatusBar } from 'expo-status-bar';
+import { Redirect, router } from 'expo-router';
+
+import CustomButton from '@/components/buttons/CustomButton';
+import use, { useEffect, useState } from 'react';
+import { useGlobalContext } from '@/context/GlobalProvider';
+
+//DB
+import * as SQLite from 'expo-sqlite';
+import { SQLiteProvider, useSQLiteContext } from 'expo-sqlite/next'; //Nos aseguramos de que se importe la version mas reciente
+import * as FileSystem from 'expo-file-system';
+import { Asset } from 'expo-asset';
+import { useYearAndMonthContext, YearAndMonthProvider } from '@/context/YearAndMonthProvider';
+import React from 'react';
+
+import { getUser } from '@/db/getFromDb';
+
+//Debo tambien crear una funcion para crear la estructura de la base de datos si no existe e insertar el usuario guest
+
+//Funcion de ayruda para cargar la base de datos que podemos mover a otro archivo
+export const loadDatabase = async () => {
+    const dbName = 'myFinance2.db';
+    const dbAsset = require('../assets/db/myFinance2.db');// db file in assets folder
+    const dbUri = Asset.fromModule(dbAsset).uri; // get the uri of the db file
+    const dbDir = FileSystem.documentDirectory + 'SQLite/' + dbName; // directory to store the db file
+
+    const dbInfo = await FileSystem.getInfoAsync(dbDir); // check if the db file exists
+    if (!dbInfo.exists) {
+        await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'SQLite/', { intermediates: true });
+        await FileSystem.downloadAsync(dbUri, dbDir); // download the db file
+    }
+}
+
+
+
+export default function App() {
+    const [dbLoaded, setDbLoaded] = useState<boolean>(false);
+    const { isLogged, setUser, user } = useGlobalContext();
+    const { selectedYear } = useYearAndMonthContext();
+
+    const db = useSQLiteContext();
+
+    useEffect(() => {
+        db.withTransactionAsync(async () => {
+            await getUser({ isLogged, db, email: 'guest@example.com', password: '', setUser })
+        });
+
+    }, [db]);
+
+    useEffect(() => {
+        // createDatabase()
+        loadDatabase()
+            .then(() => setDbLoaded(true))
+            .catch((error) => console.log(error));
+    }, []);
+
+    if (!dbLoaded) {
+        return (
+            <ThemedView>
+                <ActivityIndicator size='large' color='blue' />
+                <ThemedText>Loading...</ThemedText>
+            </ThemedView>
+        )
+    }
+
+    return (
+        <ParallaxScrollView
+            headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
+        >
+            <Image source={require('../assets/images/topImage.jpg')}
+                style={styles.headerImage}
+                resizeMode='cover'
+            ></Image>
+            <ThemedView style={styles.titleContainer}>
+                <ThemedText type="title">My Finance</ThemedText>
+                <ThemedView style={{ margin: 60, gap: 30 }}>
+
+                    <CustomButton
+                        title='Guest'
+                        handlePress={() => router.push('/home')}
+                        textStyles={buttonStyles.buttonUp}
+                    />
+
+                    <CustomButton
+                        title='Sign In'
+                        handlePress={() => router.push('/sign-in')}
+                        textStyles={buttonStyles.buttonIn}
+                    />
+                    <CustomButton
+                        title='Sign Up'
+                        handlePress={() => router.push('sign-up')}
+                        textStyles={buttonStyles.buttonUp}
+                    />
+                </ThemedView>
+            </ThemedView>
+
+        </ParallaxScrollView>
+
+    );
+}
+
+const styles = StyleSheet.create({
+    titleContainer: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 18,
+        height: "100%",
+        paddingTop: 50,
+
+    },
+    headerImage: {
+        width: '100%',
+        height: 250,
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: -1,
+    },
+});
+
+
+//Buttons Styles con el texto bien centrado
+const buttonStyles = StyleSheet.create({
+    buttonIn: {
+        color: "white",
+        fontSize: 20,
+        width: 300,
+        height: 60,
+        backgroundColor: "#219C90",
+        borderRadius: 10,
+        display: "flex",
+        verticalAlign: "middle",
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    buttonUp: {
+        color: "white",
+        fontSize: 20,
+        width: 300,
+        height: 60,
+        backgroundColor: "#4B70F5",
+        borderRadius: 10,
+        display: "flex",
+        verticalAlign: "middle",
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
+});
