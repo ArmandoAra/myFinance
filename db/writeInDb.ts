@@ -1,5 +1,8 @@
 
-import { SQLiteDatabase } from "expo-sqlite"
+import { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import { SQLiteBindValue, SQLiteDatabase, useSQLiteContext } from "expo-sqlite";
+import db from 'oui-data';
+
 
 interface Income {
     brutIncome: number;
@@ -32,13 +35,12 @@ interface SpendId {
     setMonthData: React.Dispatch<React.SetStateAction<{ id: number, brutIncome: number }>>;
 }
 
-interface Spends {
-    id: number;
+interface Spend {
     monthId: number;
     service: string;
     amount: number;
     type: string;
-    description: string;
+    description: string | null;
     createdAt: Date;
 }
 
@@ -62,11 +64,29 @@ export async function updateMonthIncome(
 
 }
 
+export async function insertNewSpend({ data, db }: {
+    data: Spend;
+    db: SQLiteDatabase;
+}) {
+    const { monthId, service, amount, type, description, createdAt } = data;
+    const dateToInsert = createdAt.toISOString().split('T')[0];
+    console.log(data)
+    try {
+        db.runAsync('INSERT INTO Spend ( service, amount, type, description, createdAt, monthId) VALUES (?, ?, ?, ?, ?, ?)', [service, amount, type, description, dateToInsert, monthId])
+    } catch (error) {
+        console.log(error)
+
+    }
+}
 
 
-// async function deleteTransaction(id: number) {
-//     db.withTransactionAsync(async () => {
-//       await db.runAsync(`DELETE FROM Transactions WHERE id = ?;`, [id]);
-//       await getData();
-//     });
-//   }
+
+export async function deleteSpend(id: number, db: SQLiteDatabase) {
+    try {
+        // await db.runAsync(`DELETE FROM Spend WHERE id = ?;`, [id]);
+        await db.runAsync('DELETE FROM Spend WHERE id = $value', { $value: id })
+
+    } catch (error) {
+        console.log(error)
+    }
+}

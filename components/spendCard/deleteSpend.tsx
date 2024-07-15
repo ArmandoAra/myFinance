@@ -3,13 +3,19 @@ import { ThemedText } from "../ThemedText";
 
 
 import { MaterialIcons } from '@expo/vector-icons';
+import { deleteSpend } from "@/db/writeInDb";
+import { SQLiteDatabase } from "expo-sqlite";
 
+export function DeleteSpend({ id, db }: { id: number, db: SQLiteDatabase }) {
 
+    const handleDelete = () => {
+        console.log(id)
+        deleteSpend(id, db)
+    }
 
-export function DeleteSpend({ id }: { id: number }) {
     return (
         <Pressable
-            onPress={() => console.log("Delete", id)}
+            onPress={handleDelete}
             style={{
                 backgroundColor: "#FC4100",
                 width: "20%",

@@ -4,6 +4,8 @@ import { Amount } from "./amount";
 import { Card } from "./card";
 import { DeleteSpend } from "./deleteSpend";
 import SpendInfo from "./spendInfo";
+import { SQLiteDatabase } from "expo-sqlite";
+import db from 'oui-data';
 
 interface Spends {
     id: number;
@@ -17,7 +19,7 @@ interface Spends {
 
 
 
-export function SpendList({ list }: { list: Spends[] }) {
+export function SpendList({ list, db }: { list: Spends[], db: SQLiteDatabase }) {
     return <FlatList
         style={{ width: "100%", height: "60%" }}
         data={list}
@@ -33,7 +35,7 @@ export function SpendList({ list }: { list: Spends[] }) {
                     <Amount
                         amount={item.amount}
                     />
-                    <DeleteSpend id={item.id} />
+                    <DeleteSpend id={item.id} db={db} />
                 </ThemedView>
             </Card>
         )}

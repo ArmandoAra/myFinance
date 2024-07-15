@@ -1,6 +1,6 @@
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { StyleSheet, FlatList, Text, View, RefreshControl, Alert, Dimensions, Pressable, TextInput, StatusBar, Button, SafeAreaView, ViewStyle } from 'react-native';
 import { AutoSizeText, ResizeTextMode } from "react-native-auto-size-text";
 //Components
@@ -32,10 +32,15 @@ import { updateMonthIncome } from '@/db/writeInDb';
 
 //Inputs 
 import { IncomeInput } from '@/components/inputs/incomeInput';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
+import { SpendInput } from '@/components/inputs/spendInput';
 
 
 import { SpendList } from '@/components/spendCard/listSpendsContainer';
 import { Amount } from '@/components/spendCard/amount';
+
+import Picker from 'react-native-picker-select';
+
 
 interface Spends {
     id: number;
@@ -52,150 +57,6 @@ interface MonthData {
     brutIncome: number;
 }
 
-function SpendInput({
-    setShowSpendInput }: {
-        setShowSpendInput: (showSpendInput: boolean) => void
-    }) {
-
-    const [value, setValue] = useState('');
-
-    const handleChange = (text: string) => {
-        // Filtrar solo números
-        //quizas aqui pueda implementar la calculadora
-        const numericValue = text.replace(/[^0-9]/g, '');
-        setValue(numericValue);
-    };
-    useEffect(() => {
-        console.log(value)
-    }, [value])
-
-    return (
-        <ThemedView style={{ height: "100%", gap: 10 }}>
-            {/* Service */}
-            <TextInput
-                style={{
-                    fontSize: 20,
-                    display: "flex",
-                    marginTop: 80,
-                    height: 50,
-                    width: "78%",
-                    borderColor: 'gray',
-                    borderRadius: 15,
-                    textAlign: 'center',
-                    alignSelf: 'center',
-                    color: 'white',
-                    backgroundColor: '#31363F',
-                }}
-                placeholder="Insert Service"
-                placeholderTextColor="white"
-            />
-            {/* Type */}
-            <TextInput
-                style={{
-                    fontSize: 20,
-                    display: "flex",
-                    height: 50,
-                    width: "78%",
-                    borderColor: 'gray',
-                    borderRadius: 15,
-                    textAlign: 'center',
-                    alignSelf: 'center',
-                    color: 'white',
-                    backgroundColor: '#31363F',
-                }}
-                placeholder="Insert Type"
-                placeholderTextColor="white"
-            />
-            {/* Description */}
-            <TextInput
-                style={{
-                    fontSize: 20,
-                    display: "flex",
-                    height: 120,
-                    width: "78%",
-                    borderColor: 'gray',
-                    borderRadius: 15,
-                    textAlign: 'left',
-                    textAlignVertical: "top",
-                    padding: 10,
-                    alignSelf: 'center',
-                    color: 'white',
-                    backgroundColor: '#31363F',
-                }}
-                multiline={true}
-                placeholder="Insert Description"
-                placeholderTextColor="white"
-            />
-            {/* Amount */}
-            <TextInput
-                style={{
-                    fontSize: 20,
-                    display: "flex",
-                    height: 50,
-                    width: "40%",
-                    borderColor: 'gray',
-                    borderRadius: 15,
-                    textAlign: 'center',
-                    color: 'white',
-                    backgroundColor: '#31363F',
-                    left: "11%",
-                }}
-                onChangeText={handleChange}
-                placeholder="Insert Amount"
-                placeholderTextColor="white"
-                keyboardType='decimal-pad'
-
-            />
-            <TextInput
-                style={{
-                    fontSize: 20,
-                    display: "flex",
-                    height: 50,
-                    width: "78%",
-                    borderColor: 'gray',
-                    borderRadius: 15,
-                    textAlign: 'center',
-                    alignSelf: 'center',
-                    color: 'white',
-                    left: "4%",
-                    backgroundColor: '#31363F',
-                }}
-                placeholder="Insert Date"
-                placeholderTextColor="white"
-            />
-            <Pressable
-                onPress={() => console.log("Add Spend")}
-                style={{
-                    right: 25,
-                    marginTop: 60,
-                    backgroundColor: "#219C90",
-                    width: "10%",
-                    height: 50,
-                    borderRadius: 10,
-                }}>
-                <ThemedText style={{ textAlign: "center", textAlignVertical: "center", height: "100%" }}>
-                    <AntDesign name="check" size={20} color="white" />
-                </ThemedText>
-            </Pressable>
-            <Pressable
-                onPress={() => setShowSpendInput(false)}
-                style={{
-                    right: 25,
-                    marginTop: 120,
-                    backgroundColor: "red",
-                    width: "90%",
-                    height: 50,
-                    borderRadius: 10,
-                }}>
-                <ThemedText style={{ textAlign: "center", textAlignVertical: "center", height: "100%" }}>
-                    Cancel
-                </ThemedText>
-            </Pressable>
-
-        </ThemedView>
-    )
-
-}
 
 
 function MonthScreen() {
@@ -210,6 +71,7 @@ function MonthScreen() {
     //Inputs visibility
     const [showIncomeInput, setShowIncomeInput] = useState<boolean>(false);
     const [showSpendInput, setShowSpendInput] = useState<boolean>(false);
+
 
     const db = useSQLiteContext();
 
@@ -274,6 +136,8 @@ function MonthScreen() {
                     {showSpendInput &&
                         <SpendInput
                             setShowSpendInput={setShowSpendInput}
+                            monthId={monthData.id}
+                            db={db}
                         />
                     }
 
@@ -318,7 +182,10 @@ function MonthScreen() {
                     </ThemedView>
 
                     {/* Spends List */}
-                    <SpendList list={spends} />
+                    <SpendList
+                        list={spends}
+                        db={db}
+                    />
 
                     {/* Total */}
                     <ThemedView

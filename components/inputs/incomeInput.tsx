@@ -10,18 +10,18 @@ import { AntDesign } from '@expo/vector-icons';
 
 export function IncomeInput({
     showIncomeInput,
-    setShowIncomeInput,
     income,
     db,
-    setIncome,
-    monthId
+    monthId,
+    setShowIncomeInput,
+    setIncome
 }: {
     showIncomeInput: boolean,
-    setShowIncomeInput: (showIncomeInput: boolean) => void,
     income: number,
     db: SQLite.SQLiteDatabase,
-    setIncome: (income: number) => void,
     monthId: number
+    setShowIncomeInput: (showIncomeInput: boolean) => void,
+    setIncome: (income: number) => void,
 }) {
     function handleIncomeInput() {
         updateMonthIncome(db, monthId, income)
