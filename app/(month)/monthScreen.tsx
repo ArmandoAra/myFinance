@@ -27,7 +27,7 @@ import { SQLiteProvider, useSQLiteContext } from 'expo-sqlite';
 import * as SQLite from 'expo-sqlite';
 import use from 'react';
 import { useGlobalContext } from '@/context/GlobalProvider';
-import { getIdFromSelectedYear, getSpendIdAndIncome, getAllSpendsByMonthId } from '@/db/getFromDb';
+import { getIdFromSelectedYear, getSpendIdAndIncome, getAllMonthSpends, getIdFromSelectedMoth, getMonthIncome } from '@/db/getFromDb';
 import { updateMonthIncome } from '@/db/writeInDb';
 
 //Inputs 
@@ -41,32 +41,19 @@ import { Amount } from '@/components/spendCard/amount';
 
 import Picker from 'react-native-picker-select';
 
-
-interface Spends {
-    id: number;
-    monthId: number;
-    service: string;
-    amount: number;
-    type: string;
-    description: string;
-    createdAt: Date;
-}
-
-interface MonthData {
-    id: number;
-    brutIncome: number;
-}
-
+//Interfaces
+import { Spend, Income } from '@/constants/interfaces';
 
 
 function MonthScreen() {
-    const { selectedYear, selectedMonth } = useYearAndMonthContext();
+    const {
+        selectedYear,
+        selectedMonth,
+    } = useYearAndMonthContext();
     const { isLogged, user, setUser } = useGlobalContext();
 
-    const [yearId, setYearId] = useState<number>(0);
-    const [monthData, setMonthData] = useState<MonthData>({ id: 0, brutIncome: 0 });
-    const [spends, setSpends] = useState<Spends[]>([]);
     const [income, setIncome] = useState<number>(0);
+    const [spends, setSpends] = useState<Spend[]>([]);
 
     //Inputs visibility
     const [showIncomeInput, setShowIncomeInput] = useState<boolean>(false);
@@ -75,15 +62,17 @@ function MonthScreen() {
 
     const db = useSQLiteContext();
 
-    useEffect(() => {
-        getIdFromSelectedYear({ selectedYear, db, setYearId }) //Obtenemos el id del año seleccionado
-        getSpendIdAndIncome({ db, selectedMonth, yearId, isLogged, setMonthData }) //Obtenemos el id y el brutIncome del mes seleccionado
-        getAllSpendsByMonthId(monthData.id, db, setSpends) //Obtenemos todos los gastos del mes seleccionado 
-    }, [monthData.brutIncome, monthData.id, yearId, spends.length])
 
+    //    Obterner el Income 
     useEffect(() => {
-        getSpendIdAndIncome({ db, selectedMonth, yearId, isLogged, setMonthData })
+        getMonthIncome({ selectedYear, selectedMonth, setIncome });
     }, [showIncomeInput])
+
+
+    // Obtener los gastos del mes
+    useEffect(() => {
+        getAllMonthSpends(selectedYear, selectedMonth, setSpends);
+    }, [spends.length, showSpendInput])
 
     return (
 
@@ -97,21 +86,34 @@ function MonthScreen() {
                     {/* Income */}
                     <ThemedView
                         style={{
+
                             flexDirection: 'row',
-                            flexShrink: 1,
-                            alignItems: 'center',
-                            justifyContent: 'space-around',
-                            alignSelf: 'center',
-                            marginTop: 10,
-                            backgroundColor: '#31363F',
                             width: '90%',
                             height: 40,
                             borderRadius: 10,
+                            margin: 10,
+                            alignSelf: 'center',
+
                         }}
                     >
+                        <ThemedText style={{
+                            fontSize: 20,
+                            textAlign: "center",
+                            backgroundColor: '#31363F',
+                            textAlignVertical: "center",
+                            borderRadius: 10,
+                            width: "30%"
+                        }}>Income: </ThemedText>
+                        <ThemedText style={{
+                            fontSize: 20,
+                            backgroundColor: '#31363F',
+                            width: "50%",
+                            textAlign: "center",
+                            textAlignVertical: "center",
+                            borderRadius: 10,
+                            left: "30%"
+                        }} >{income} </ThemedText>
 
-                        <ThemedText style={{ fontSize: 20, left: "100%" }}>Income: </ThemedText>
-                        <ThemedText style={{ color: "#CCFFAD", backgroundColor: "#31363F", borderRadius: 10, textAlignVertical: "center", fontSize: 20, textAlign: "center", left: "100%" }} >{monthData.brutIncome} </ThemedText>
                         <Pressable
                             onPress={() => setShowIncomeInput(!showIncomeInput)}
                             style={{
@@ -127,17 +129,17 @@ function MonthScreen() {
                         <IncomeInput
                             setShowIncomeInput={setShowIncomeInput}
                             showIncomeInput={showIncomeInput}
-                            income={income}
+                            income={income ? income : 0}
                             setIncome={setIncome}
-                            db={db}
-                            monthId={monthData.id}
+                            year={selectedYear}
+                            month={selectedMonth}
                         />}
 
                     {showSpendInput &&
                         <SpendInput
                             setShowSpendInput={setShowSpendInput}
-                            monthId={monthData.id}
-                            db={db}
+                            month={selectedMonth}
+                            year={selectedYear}
                         />
                     }
 
@@ -185,6 +187,8 @@ function MonthScreen() {
                     <SpendList
                         list={spends}
                         db={db}
+                        setSpends={setSpends}
+                        showAmountInfo={true}
                     />
 
                     {/* Total */}

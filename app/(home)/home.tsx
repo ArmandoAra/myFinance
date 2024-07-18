@@ -24,7 +24,7 @@ import { useGlobalContext } from '@/context/GlobalProvider';
 const { height, width } = Dimensions.get('window');
 
 //getFromDb
-import { getAllYearIncomes, getUser, getIdFromSelectedYear } from '@/db/getFromDb';
+import { getAllYearIncomes, getUser, getIdFromSelectedYear, getIdFromSelectedMoth, } from '@/db/getFromDb';
 
 
 //Styles
@@ -35,23 +35,29 @@ interface IncomeMonth {
 }
 
 const Home = () => {
-    const { selectedYear, selectedMonth, setSelectedYear, setSelectedMonth, } = useYearAndMonthContext();
+    const {
+        selectedYear,
+        selectedMonth,
+        setSelectedYear,
+        setSelectedMonth,
+    } = useYearAndMonthContext();
+
     const { isLogged, user, setUser } = useGlobalContext();
-    const [yearId, setYearId] = useState<number>(0);
+
     const [allIncomes, setAllIncomes] = useState<IncomeMonth>(); // [brutIncome, brutIncome, ...
-    const db = useSQLiteContext();
 
 
+    // #######User#########
     useEffect(() => {
-        getUser({ isLogged, db, email: 'guest@example.com', password: '', setUser })
+        // getUser({ isLogged, db, email: 'guest@example.com', password: '', setUser })
     }, [user.id, user.name])
 
 
+
+
     useEffect(() => {
-        getIdFromSelectedYear({ selectedYear, db, setYearId });
-        getAllYearIncomes(yearId, db, setAllIncomes);//Aqui devuelve un objeto con los ingresos de cada mes y el nombre del mes
-        //Arreglar para que devuelva solo la suma de los brutIncomes y la suma de cada mes de los gastos y el total hacer de ultimo.
-    }, [yearId]);
+
+    }, [selectedMonth, selectedYear,]);
 
 
 
@@ -70,10 +76,13 @@ const Home = () => {
                         onValueChange={(value) => setSelectedYear(value)}
 
                         items={[
-                            { label: '2023', value: 2023 },
                             { label: '2024', value: 2024 },
                             { label: '2025', value: 2025 },
                             { label: '2026', value: 2026 },
+                            { label: '2027', value: 2027 },
+                            { label: '2028', value: 2028 },
+                            { label: '2029', value: 2029 },
+                            { label: '2030', value: 2030 },
                         ]}
                         style={pickerStyles}
 

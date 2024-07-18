@@ -11,25 +11,33 @@ import { AntDesign } from '@expo/vector-icons';
 export function IncomeInput({
     showIncomeInput,
     income,
-    db,
-    monthId,
+    year,
+    month,
     setShowIncomeInput,
     setIncome
 }: {
     showIncomeInput: boolean,
     income: number,
-    db: SQLite.SQLiteDatabase,
-    monthId: number
+    year: number,
+    month: string,
     setShowIncomeInput: (showIncomeInput: boolean) => void,
-    setIncome: (income: number) => void,
+    setIncome: React.Dispatch<React.SetStateAction<number>>,
 }) {
     function handleIncomeInput() {
-        updateMonthIncome(db, monthId, income)
+        updateMonthIncome(income, month, year)
         setShowIncomeInput(!showIncomeInput)
     }
 
     return (
-        <ThemedView style={{ height: "100%" }}>
+        <ThemedView style={{
+            paddingTop: 50,
+            width: "100%",
+            height: "100%",
+            position: 'absolute',
+            backgroundColor: 'black',
+            zIndex: 1,
+            gap: 10,
+        }}>
             <TextInput
                 style={{
                     fontSize: 20,
@@ -46,10 +54,10 @@ export function IncomeInput({
                     left: "4%",
                     backgroundColor: '#31363F',
                 }}
-                placeholder="Insert Income"
+                onChangeText={(text) => setIncome(Number(text))}
+                placeholder="Enter your income"
                 placeholderTextColor="white"
                 keyboardType='decimal-pad'
-                onChangeText={(text) => setIncome(Number(text))}
             />
             <Pressable
                 onPress={handleIncomeInput}

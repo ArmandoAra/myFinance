@@ -1,78 +1,38 @@
 
-import { DateTimePickerEvent } from "@react-native-community/datetimepicker";
-import { SQLiteBindValue, SQLiteDatabase, useSQLiteContext } from "expo-sqlite";
-import db from 'oui-data';
+import { SQLiteDatabase } from "expo-sqlite";
+import * as SQLite from 'expo-sqlite';
 
-
-interface Income {
-    brutIncome: number;
-    month: string;
-}
-
-interface IncomeMonth {
-    [key: string]: number;
-}
-
-interface GetUser {
-    isLogged: boolean;
-    db: SQLiteDatabase;
-    email: string;
-    password: string;
-    setUser: React.Dispatch<React.SetStateAction<any | null>>;
-}
-
-interface GetIdFromSelectedYear {
-    selectedYear: number;
-    db: SQLiteDatabase;
-    setYearId: React.Dispatch<React.SetStateAction<number>>;
-}
-
-interface SpendId {
-    db: SQLiteDatabase;
-    selectedMonth: string;
-    yearId: number;
-    isLogged: boolean;
-    setMonthData: React.Dispatch<React.SetStateAction<{ id: number, brutIncome: number }>>;
-}
-
-interface Spend {
-    monthId: number;
-    service: string;
-    amount: number;
-    type: string;
-    description: string | null;
-    createdAt: Date;
-}
-
-interface AllIncomes {
-    brutIncome: number;
-    month: string;
-}
+import { Spend } from "@/constants/interfaces";
 
 
 
 export async function updateMonthIncome(
-    db: SQLiteDatabase,
-    monthId: number,
-    incomeAmount: number
+    income: number,
+    month: string,
+    year: number,
 ) {
+
+    const db = await SQLite.openDatabaseAsync('myFinance2.db');
+
     try {
-        await db.runAsync('UPDATE Month SET brutIncome = ? WHERE id = ?', [incomeAmount, monthId])
+        await db.runAsync('UPDATE Income SET amount = ? WHERE month = ? AND year = ?', [income, month, year])
+            .then(() => { console.log('Income updated') })
     } catch (error) {
+        console.log('Error updating income', error)
         console.log(error)
     }
 
 }
 
-export async function insertNewSpend({ data, db }: {
-    data: Spend;
-    db: SQLiteDatabase;
+export async function insertNewSpend(data: {
+    data: Spend
 }) {
-    const { monthId, service, amount, type, description, createdAt } = data;
+    const { service, amount, type, description, createdAt, month, year } = data.data;
+
+    const db = await SQLite.openDatabaseAsync('myFinance2.db');
     const dateToInsert = createdAt.toISOString().split('T')[0];
-    console.log(data)
     try {
-        db.runAsync('INSERT INTO Spend ( service, amount, type, description, createdAt, monthId) VALUES (?, ?, ?, ?, ?, ?)', [service, amount, type, description, dateToInsert, monthId])
+        db.runAsync('INSERT INTO Spend ( service, amount, type, description, createdAt, month, year) VALUES (?, ?, ?, ?, ?, ?, ?)', [service, amount, type, description, dateToInsert, month, year])
     } catch (error) {
         console.log(error)
 

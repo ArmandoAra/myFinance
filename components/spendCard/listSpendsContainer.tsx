@@ -5,21 +5,25 @@ import { Card } from "./card";
 import { DeleteSpend } from "./deleteSpend";
 import SpendInfo from "./spendInfo";
 import { SQLiteDatabase } from "expo-sqlite";
-import db from 'oui-data';
-
-interface Spends {
-    id: number;
-    monthId: number;
-    service: string;
-    amount: number;
-    type: string;
-    description: string;
-    createdAt: Date;
-}
 
 
+//Interfaces
+import { Spend } from '../../constants/interfaces'
 
-export function SpendList({ list, db }: { list: Spends[], db: SQLiteDatabase }) {
+export function SpendList({
+    list,
+    db,
+    setSpends,
+    showAmountInfo
+}: {
+    list: Spend[],
+    db: SQLiteDatabase,
+    setSpends: React.Dispatch<React.SetStateAction<Spend[]>>,
+    showAmountInfo: boolean
+}) {
+
+
+
     return <FlatList
         style={{ width: "100%", height: "60%" }}
         data={list}
@@ -34,8 +38,9 @@ export function SpendList({ list, db }: { list: Spends[], db: SQLiteDatabase }) 
                 <ThemedView style={{ width: "40%", gap: 3, flexDirection: "row" }}>
                     <Amount
                         amount={item.amount}
+                        showInfo={showAmountInfo}
                     />
-                    <DeleteSpend id={item.id} db={db} />
+                    <DeleteSpend id={item.id} db={db} setSpends={setSpends} list={list} />
                 </ThemedView>
             </Card>
         )}

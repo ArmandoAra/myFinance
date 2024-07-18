@@ -15,7 +15,7 @@ const YearAndMonthContext = createContext<YearAndMonthContextProps>({
     selectedYear: 0,
     selectedMonth: '',
     setSelectedYear: () => { },
-    setSelectedMonth: () => { }
+    setSelectedMonth: () => { },
 });
 
 export const useYearAndMonthContext = () => useContext(YearAndMonthContext);
@@ -31,6 +31,7 @@ export const YearAndMonthProvider: FC<YearAndMonthProviderProps> = ({ children }
 
     const [selectedYear, setSelectedYear] = useState<number>(currentYear);
     const [selectedMonth, setSelectedMonth] = useState<string>(currentMonth);
+
 
     return (
         <YearAndMonthContext.Provider

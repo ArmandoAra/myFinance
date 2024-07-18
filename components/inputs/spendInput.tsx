@@ -7,36 +7,30 @@ import { ThemedView } from "../ThemedView";
 import { insertNewSpend } from "@/db/writeInDb";
 
 import * as SQLite from 'expo-sqlite';
+import { Spend } from '../../constants/interfaces';
 
-interface Spend {
-    service: string;
-    amount: number;
-    type: string;
-    description: string | null;
-    monthId: number;
-    createdAt: Date;
-}
 
 
 export function SpendInput({
     setShowSpendInput,
-    monthId,
-    db,
+    month,
+    year,
 }: {
     setShowSpendInput: (showSpendInput: boolean) => void,
-    monthId: number,
-    db: SQLite.SQLiteDatabase,
+    month: string,
+    year: number,
 }) {
     const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
 
 
     const [data, setData] = useState<Spend>({
+        month,
+        year,
         service: '',
         amount: 0,
         type: '',
         description: '',
         createdAt: new Date(),
-        monthId,
     }
     );
 
@@ -56,17 +50,16 @@ export function SpendInput({
     };
 
     const handleSubmit = () => {
-        insertNewSpend({
-            db,
-            data
-        });
+        insertNewSpend(
+            { data }
+        );
         setShowSpendInput(false);
-
     };
 
 
     return (
         <ThemedView style={styles.container}>
+
             {/* Service */}
             <TextInput
                 value={data.service}
@@ -152,8 +145,13 @@ export function SpendInput({
 
 const styles = StyleSheet.create({
     container: {
+        paddingTop: 50,
+        width: "100%",
         height: "100%",
-        gap: 10
+        position: 'absolute',
+        backgroundColor: 'black',
+        zIndex: 1,
+        gap: 10,
     },
     input: {
         fontSize: 20,

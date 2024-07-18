@@ -105,13 +105,14 @@ export const insertMonth = async (db: any, yearId: number, month: string, brutIn
 };
 
 // Función para insertar un gasto
-export const insertSpend = async (db: any, monthId: number, service: string, amount: number, type: string, description: string) => {
+export const insertSpend = async (db: any, monthId: number, yearId: number, service: string, amount: number, type: string, description: string) => {
     const statement = await db.prepareAsync(
-        'INSERT INTO Spend (monthId, service, amount, type, description) VALUES ($monthId, $service, $amount, $type, $description)'
+        'INSERT INTO Spend (monthId,yearId, service, amount, type, description) VALUES ($monthId,$yearId, $service, $amount, $type, $description)'
     );
     try {
         const result = await statement.executeAsync({
             $monthId: monthId,
+            $yearId: yearId,
             $service: service,
             $amount: amount,
             $type: type,
