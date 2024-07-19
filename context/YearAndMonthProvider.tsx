@@ -32,7 +32,6 @@ export const YearAndMonthProvider: FC<YearAndMonthProviderProps> = ({ children }
     const [selectedYear, setSelectedYear] = useState<number>(currentYear);
     const [selectedMonth, setSelectedMonth] = useState<string>(currentMonth);
 
-
     return (
         <YearAndMonthContext.Provider
             value={{

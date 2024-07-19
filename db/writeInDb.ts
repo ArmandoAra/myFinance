@@ -41,11 +41,10 @@ export async function insertNewSpend(data: {
 
 
 
-export async function deleteSpend(id: number, db: SQLiteDatabase) {
+export async function deleteSpend(id: number) {
+    const db = await SQLite.openDatabaseAsync('myFinance2.db');
     try {
-        // await db.runAsync(`DELETE FROM Spend WHERE id = ?;`, [id]);
         await db.runAsync('DELETE FROM Spend WHERE id = $value', { $value: id })
-
     } catch (error) {
         console.log(error)
     }

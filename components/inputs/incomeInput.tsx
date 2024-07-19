@@ -1,4 +1,3 @@
-import { updateMonthIncome } from "@/db/writeInDb"
 import { TextInput, Pressable } from "react-native"
 import { ThemedText } from "../ThemedText"
 import { ThemedView } from "../ThemedView"
@@ -8,23 +7,29 @@ import * as SQLite from 'expo-sqlite';
 import { AntDesign } from '@expo/vector-icons';
 
 
+import { updateIncome } from "@/db/dbTools";
+
+
 export function IncomeInput({
     showIncomeInput,
-    income,
+    amount,
     year,
     month,
     setShowIncomeInput,
-    setIncome
+    setAmount
 }: {
     showIncomeInput: boolean,
-    income: number,
+    amount: number,
     year: number,
     month: string,
     setShowIncomeInput: (showIncomeInput: boolean) => void,
-    setIncome: React.Dispatch<React.SetStateAction<number>>,
+    setAmount: React.Dispatch<React.SetStateAction<number>>,
 }) {
+
+
+
     function handleIncomeInput() {
-        updateMonthIncome(income, month, year)
+        updateIncome({ amount, month, year })
         setShowIncomeInput(!showIncomeInput)
     }
 
@@ -54,7 +59,7 @@ export function IncomeInput({
                     left: "4%",
                     backgroundColor: '#31363F',
                 }}
-                onChangeText={(text) => setIncome(Number(text))}
+                onChangeText={(text) => setAmount(Number(text))}
                 placeholder="Enter your income"
                 placeholderTextColor="white"
                 keyboardType='decimal-pad'

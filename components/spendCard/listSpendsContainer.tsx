@@ -8,18 +8,19 @@ import { SQLiteDatabase } from "expo-sqlite";
 
 
 //Interfaces
-import { Spend } from '../../constants/interfaces'
+import { Spend } from "@/constants/interfaces";
+import React from "react";
 
 export function SpendList({
     list,
-    db,
     setSpends,
-    showAmountInfo
+    showAmountInfo,
+    handleEdit
 }: {
     list: Spend[],
-    db: SQLiteDatabase,
     setSpends: React.Dispatch<React.SetStateAction<Spend[]>>,
     showAmountInfo: boolean
+    handleEdit: ({ id, service, date, type, amount }: { id: number; service: string; date: Date; type: string; amount: number; }) => void
 }) {
 
 
@@ -30,17 +31,19 @@ export function SpendList({
         renderItem={({ item }) => (
             <Card>
                 <SpendInfo
+                    amount={item.amount}
                     service={item.service}
                     date={item.createdAt}
                     type={item.type}
                     id={item.id}
+                    handleEdit={handleEdit}
                 />
                 <ThemedView style={{ width: "40%", gap: 3, flexDirection: "row" }}>
                     <Amount
                         amount={item.amount}
                         showInfo={showAmountInfo}
                     />
-                    <DeleteSpend id={item.id} db={db} setSpends={setSpends} list={list} />
+                    <DeleteSpend id={item.id} setSpends={setSpends} list={list} />
                 </ThemedView>
             </Card>
         )}

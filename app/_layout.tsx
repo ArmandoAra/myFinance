@@ -48,6 +48,7 @@ export default function RootLayout() {
                                         backgroundColor: '#003b35',
                                     },
                                 }} />
+
                                 <Stack.Screen name="+not-found" />
                             </Stack>
                         </GlobalProvider>

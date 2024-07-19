@@ -3,17 +3,25 @@ import { ThemedText } from "../ThemedText";
 
 
 import { MaterialIcons } from '@expo/vector-icons';
-import { deleteSpend } from "@/db/writeInDb";
+import { deleteSpend } from "@/db/dbTools";
 import { SQLiteDatabase } from "expo-sqlite";
 
 //Interfaces
 import { Spend } from '../../constants/interfaces'
 
-export function DeleteSpend({ id, db, setSpends, list }: { id: number, db: SQLiteDatabase, setSpends: React.Dispatch<React.SetStateAction<Spend[]>>, list: Spend[] }) {
+export function DeleteSpend({
+    id,
+    setSpends,
+    list
+}: {
+    id: number,
+    setSpends: React.Dispatch<React.SetStateAction<Spend[]>>,
+    list: Spend[]
+}) {
 
 
     const handleDelete = () => {
-        deleteSpend(id, db)
+        deleteSpend(id)
         const newList = list.filter((item) => item.id !== id)
         setSpends(newList)
     }

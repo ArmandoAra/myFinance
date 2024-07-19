@@ -14,6 +14,7 @@ export interface Income {
 }
 
 export interface Spend {
+    id: number;
     month: string;
     year: number;
     service: string;

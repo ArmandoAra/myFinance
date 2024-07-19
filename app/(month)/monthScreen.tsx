@@ -1,63 +1,54 @@
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import React, { useEffect, useRef, useState } from 'react'
-import { StyleSheet, FlatList, Text, View, RefreshControl, Alert, Dimensions, Pressable, TextInput, StatusBar, Button, SafeAreaView, ViewStyle } from 'react-native';
-import { AutoSizeText, ResizeTextMode } from "react-native-auto-size-text";
-//Components
-import SearchInput from '@/components/SearchInput';
-import VideoCard from '@/components/VideoCard'
-import EmptyList from '@/components/Empty';
 
-import { SpendInfo } from '@/components/spendCard/spendInfo';
-import { DeleteSpend } from '@/components/spendCard/deleteSpend';
-import { AntDesign, FontAwesome } from '@expo/vector-icons';
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, Dimensions, Pressable, SafeAreaView } from 'react-native';
 
-import { useRoute } from '@react-navigation/native';
-
+//Context
+import { useSQLiteContext } from 'expo-sqlite';
 import { useYearAndMonthContext } from '@/context/YearAndMonthProvider';
-import CustomButton from '@/components/buttons/CustomButton';
-import { router } from 'expo-router';
+import { useGlobalContext } from '@/context/GlobalProvider';
 
+//Style
 const { height } = Dimensions.get('window');
-
+import { FontAwesome } from '@expo/vector-icons';
 
 //db
-import { getUserById, insertMonth, insertSpend, insertUser, insertYear, openDatabase } from '@/db/mf';
-import { SQLiteProvider, useSQLiteContext } from 'expo-sqlite';
-import * as SQLite from 'expo-sqlite';
-import use from 'react';
-import { useGlobalContext } from '@/context/GlobalProvider';
-import { getIdFromSelectedYear, getSpendIdAndIncome, getAllMonthSpends, getIdFromSelectedMoth, getMonthIncome } from '@/db/getFromDb';
-import { updateMonthIncome } from '@/db/writeInDb';
+import { getMonthSpends, getMonthIncome, } from '@/db/dbTools';
 
-//Inputs 
+//Components
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { IncomeInput } from '@/components/inputs/incomeInput';
-import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { SpendInput } from '@/components/inputs/spendInput';
-
-
+import { EditSpend } from '@/components/inputs/editSpend';
 import { SpendList } from '@/components/spendCard/listSpendsContainer';
 import { Amount } from '@/components/spendCard/amount';
 
-import Picker from 'react-native-picker-select';
-
 //Interfaces
-import { Spend, Income } from '@/constants/interfaces';
+import { Spend } from '@/constants/interfaces';
 
 
 function MonthScreen() {
-    const {
-        selectedYear,
-        selectedMonth,
-    } = useYearAndMonthContext();
     const { isLogged, user, setUser } = useGlobalContext();
 
-    const [income, setIncome] = useState<number>(0);
+    const { selectedYear, selectedMonth, } = useYearAndMonthContext();
+
+    const [amount, setAmount] = useState<number>(0);
     const [spends, setSpends] = useState<Spend[]>([]);
+    const [editSpend, setEditSpend] = useState<Spend>({
+        id: 0,
+        service: '',
+        createdAt: new Date(),
+        type: '',
+        amount: 0,
+        month: '',
+        year: 0,
+        description: '',
+    });
 
     //Inputs visibility
     const [showIncomeInput, setShowIncomeInput] = useState<boolean>(false);
     const [showSpendInput, setShowSpendInput] = useState<boolean>(false);
+    const [showEditInput, setShowEditInput] = useState<boolean>(false);
 
 
     const db = useSQLiteContext();
@@ -65,14 +56,20 @@ function MonthScreen() {
 
     //    Obterner el Income 
     useEffect(() => {
-        getMonthIncome({ selectedYear, selectedMonth, setIncome });
+        getMonthIncome({ year: selectedYear, month: selectedMonth, setAmount });
     }, [showIncomeInput])
 
+    function handleEdit({ id, service, date, type, amount }: { id: number; service: string; date: Date; type: string; amount: number }) {
+        const createdAt = new Date(date);
+        setEditSpend({ id, service, createdAt, type, amount, month: selectedMonth, year: selectedYear, description: '' });
+        setShowEditInput(true);
+    }
 
     // Obtener los gastos del mes
     useEffect(() => {
-        getAllMonthSpends(selectedYear, selectedMonth, setSpends);
-    }, [spends.length, showSpendInput])
+        getMonthSpends(selectedYear, selectedMonth, setSpends);
+    }, [spends.length, showSpendInput, showEditInput])
+
 
     return (
 
@@ -112,7 +109,7 @@ function MonthScreen() {
                             textAlignVertical: "center",
                             borderRadius: 10,
                             left: "30%"
-                        }} >{income} </ThemedText>
+                        }} >{amount} </ThemedText>
 
                         <Pressable
                             onPress={() => setShowIncomeInput(!showIncomeInput)}
@@ -129,8 +126,8 @@ function MonthScreen() {
                         <IncomeInput
                             setShowIncomeInput={setShowIncomeInput}
                             showIncomeInput={showIncomeInput}
-                            income={income ? income : 0}
-                            setIncome={setIncome}
+                            amount={amount || 0}
+                            setAmount={setAmount}
                             year={selectedYear}
                             month={selectedMonth}
                         />}
@@ -142,6 +139,11 @@ function MonthScreen() {
                             year={selectedYear}
                         />
                     }
+                    {showEditInput &&
+                        <EditSpend
+                            editSpend={editSpend}
+                            setShowEditInput={setShowEditInput}
+                        />}
 
                     {/* Sort By */}
                     <ThemedView
@@ -186,9 +188,9 @@ function MonthScreen() {
                     {/* Spends List */}
                     <SpendList
                         list={spends}
-                        db={db}
                         setSpends={setSpends}
                         showAmountInfo={true}
+                        handleEdit={handleEdit}
                     />
 
                     {/* Total */}

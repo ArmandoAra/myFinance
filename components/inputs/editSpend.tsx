@@ -7,30 +7,29 @@ import { ThemedView } from "../ThemedView";
 
 import { Spend } from '../../constants/interfaces';
 
-import { insertSpend } from "@/db/dbTools";
+import { updateSpend } from "@/db/dbTools";
 
 
-export function SpendInput({
-    setShowSpendInput,
-    month,
-    year,
+export function EditSpend({
+    setShowEditInput,
+    editSpend,
 }: {
-    setShowSpendInput: (showSpendInput: boolean) => void,
-    month: string,
-    year: number,
+    setShowEditInput: (showSpendInput: boolean) => void,
+    editSpend: Spend,
 }) {
     const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
+    const { id, month, year, service, amount, type, description, createdAt } = editSpend;
 
 
     const [data, setData] = useState<Spend>({
-        id: 0,
+        id,
         month,
         year,
-        service: '',
-        amount: 0,
-        type: '',
-        description: '',
-        createdAt: new Date(),
+        service,
+        amount,
+        type,
+        description,
+        createdAt,
     }
     );
 
@@ -50,8 +49,8 @@ export function SpendInput({
     };
 
     const handleSubmit = () => {
-        insertSpend({ data });
-        setShowSpendInput(false);
+        updateSpend({ data });
+        setShowEditInput(false);
     };
 
 
@@ -120,7 +119,7 @@ export function SpendInput({
             </Pressable>
             <ThemedView style={styles.buttonContainer}>
                 <Pressable
-                    onPress={() => setShowSpendInput(false)}
+                    onPress={() => setShowEditInput(false)}
                     style={{ ...styles.button, ...styles.cancelButton }}>
                     <ThemedText style={styles.buttonText}>
                         Cancel

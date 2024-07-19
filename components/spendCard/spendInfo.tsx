@@ -4,16 +4,23 @@ import { ThemedText } from '../ThemedText';
 import { ThemedView } from '../ThemedView';
 
 import { FontAwesome5 } from '@expo/vector-icons';
+import { router } from 'expo-router';
 
-export function SpendInfo({ id, service, date, type }: {
+export function SpendInfo({ id, service, date, type, amount, handleEdit }: {
     id: number;
     service: string;
     date: Date;
     type: string;
+    amount: number
+    handleEdit: ({ id, service, date, type, amount }: { id: number; service: string; date: Date; type: string; amount: number; }) => void;
 }) {
+
+
+
+
     return (
         <Pressable
-            onPress={() => console.log("Edit", id)}
+            onPress={() => handleEdit({ id, service, date, type, amount })}
             style={styles.container}
         >
             <ThemedView style={{ flexDirection: "row", backgroundColor: "transparent", paddingHorizontal: 10, height: "100%" }}>
