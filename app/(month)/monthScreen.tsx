@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { StyleSheet, Dimensions, Pressable, SafeAreaView } from 'react-native';
 
 //Context
@@ -25,10 +25,11 @@ import { Amount } from '@/components/spendCard/amount';
 
 //Interfaces
 import { Spend } from '@/constants/interfaces';
+import CustomButton from '@/components/buttons/CustomButton';
+import { router, useFocusEffect } from 'expo-router';
 
 
 function MonthScreen() {
-    const { isLogged, user, setUser } = useGlobalContext();
 
     const { selectedYear, selectedMonth, } = useYearAndMonthContext();
 
@@ -50,26 +51,23 @@ function MonthScreen() {
     const [showSpendInput, setShowSpendInput] = useState<boolean>(false);
     const [showEditInput, setShowEditInput] = useState<boolean>(false);
 
-
-    const db = useSQLiteContext();
-
-
     //    Obterner el Income 
     useEffect(() => {
-        getMonthIncome({ year: selectedYear, month: selectedMonth, setAmount });
+        //Obtener todos los Incomes del año seleccionado y si no existe crearlo
+        getMonthIncome({ amount, year: selectedYear, month: selectedMonth, setAmount });
     }, [showIncomeInput])
 
-    function handleEdit({ id, service, date, type, amount }: { id: number; service: string; date: Date; type: string; amount: number }) {
-        const createdAt = new Date(date);
-        setEditSpend({ id, service, createdAt, type, amount, month: selectedMonth, year: selectedYear, description: '' });
-        setShowEditInput(true);
-    }
 
     // Obtener los gastos del mes
     useEffect(() => {
         getMonthSpends(selectedYear, selectedMonth, setSpends);
     }, [spends.length, showSpendInput, showEditInput])
 
+    function handleEdit({ id, service, date, type, amount }: { id: number; service: string; date: Date; type: string; amount: number }) {
+        const createdAt = new Date(date);
+        setEditSpend({ id, service, createdAt, type, amount, month: selectedMonth, year: selectedYear, description: '' });
+        setShowEditInput(true);
+    }
 
     return (
 
@@ -126,7 +124,7 @@ function MonthScreen() {
                         <IncomeInput
                             setShowIncomeInput={setShowIncomeInput}
                             showIncomeInput={showIncomeInput}
-                            amount={amount || 0}
+                            amount={amount ? amount : 0}
                             setAmount={setAmount}
                             year={selectedYear}
                             month={selectedMonth}

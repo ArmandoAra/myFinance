@@ -2,11 +2,9 @@ import { TextInput, Pressable } from "react-native"
 import { ThemedText } from "../ThemedText"
 import { ThemedView } from "../ThemedView"
 
-import * as SQLite from 'expo-sqlite';
-
 import { AntDesign } from '@expo/vector-icons';
 
-
+//Db
 import { updateIncome } from "@/db/dbTools";
 
 
@@ -29,7 +27,7 @@ export function IncomeInput({
 
 
     function handleIncomeInput() {
-        updateIncome({ amount, month, year })
+        updateIncome({ amount, month, year, setAmount })
         setShowIncomeInput(!showIncomeInput)
     }
 
@@ -37,7 +35,7 @@ export function IncomeInput({
         <ThemedView style={{
             paddingTop: 50,
             width: "100%",
-            height: "100%",
+            height: 1000,
             position: 'absolute',
             backgroundColor: 'black',
             zIndex: 1,

@@ -1,33 +1,30 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, FC } from 'react';
 
 import { getMonthByNumber } from '@/utils/getMonth';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+import { getUser } from '@/db/dbTools';
 // Definición de la interfaz del contexto global
 interface GlobalContextProps {
     isLogged: boolean;
-    user: User;
+    user: string;
     loading: boolean;
-    setUser: React.Dispatch<React.SetStateAction<any | null>>;
+    setUser: React.Dispatch<React.SetStateAction<string>>;
     setIsLogged: React.Dispatch<React.SetStateAction<boolean>>;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface User {
-    id: number | null;
     name: string | null;
-    email: string;
 }
 
 // Contexto Global
 const GlobalContext = createContext<GlobalContextProps>({
     isLogged: false,
-    user: {
-        id: null,
-        name: null,
-        email: '',
-    },
+    user: "",
     loading: true,
     setUser: () => { },
     setIsLogged: () => { },
-
+    setLoading: () => { },
 });
 
 export const useGlobalContext = () => useContext(GlobalContext);
@@ -41,18 +38,12 @@ interface GlobalProviderProps {
 export const GlobalProvider: FC<GlobalProviderProps> = ({ children }) => {
 
     const [isLogged, setIsLogged] = useState<boolean>(false);
-    const [user, setUser] = useState<User>({
-        id: null,
-        name: null,
-        email: '',
-    });
+    const [user, setUser] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        // Verificar si el usuario está logueado
-        // Si el usuario está logueado, se obtiene la información del usuario
-        // Si el usuario no está logueado, se muestra la pantalla de login
-    }, []);
+        getUser(setUser, setIsLogged, setLoading)
+    }, [user]);
 
 
 
@@ -64,6 +55,7 @@ export const GlobalProvider: FC<GlobalProviderProps> = ({ children }) => {
                 loading,
                 setUser,
                 setIsLogged,
+                setLoading,
             }}
         >
             {children}

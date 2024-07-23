@@ -13,36 +13,24 @@ export default function TabLayout() {
     const colorScheme = useColorScheme();
 
     return (
-        <Tabs
-            screenOptions={{
-                headerShown: false,
-                //ocultar el texto 
-                tabBarShowLabel: false,
-                tabBarStyle: {
-                    backgroundColor: "#003b35",
-                    borderTopWidth: 0,
-                },
-            }}>
-
-            <Tabs.Screen
-                name="sign-in"
+        <Stack>
+            <Stack.Screen
+                name="insertUser" //El nomber tiene que ser igual al que se pone en el archivo de rutas
                 options={{
-                    title: 'Sign In',
-                    tabBarIcon: ({ color }) => (
-                        <FontAwesome name="sign-in" size={24} color={color} />
+                    headerStyle: {
+                        backgroundColor: '#003b35',
+                    },
+                    headerTitle: "Insert User",
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                    headerTitleAlign: "center",
+                    headerShadowVisible: false,
+                    // headerLeft va a contener el icono de usuario o el de invitado
+                }}
 
-                    ),
-                }}
             />
-            <Tabs.Screen
-                name="sign-up"
-                options={{
-                    title: 'Sign Up',
-                    tabBarIcon: ({ color }) => (
-                        <Feather name="user-plus" size={24} color={color} />
-                    ),
-                }}
-            />
-        </Tabs>
+        </Stack>
     );
 }

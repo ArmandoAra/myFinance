@@ -44,20 +44,18 @@ const Home = () => {
 
     const { isLogged, user, setUser } = useGlobalContext();
 
-    const [allIncomes, setAllIncomes] = useState<IncomeMonth>(); // [brutIncome, brutIncome, ...
-
-
     // #######User#########
     useEffect(() => {
         // getUser({ isLogged, db, email: 'guest@example.com', password: '', setUser })
-    }, [user.id, user.name])
+    }, [user])
 
 
 
 
     useEffect(() => {
 
-    }, [selectedMonth, selectedYear,]);
+
+    }, [selectedMonth, selectedYear]);
 
 
 

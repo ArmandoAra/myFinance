@@ -1,4 +1,4 @@
-import { StyleSheet, StyleSheetProperties, Image, ActivityIndicator } from 'react-native';
+import { StyleSheet, StyleSheetProperties, Image, ActivityIndicator, Dimensions } from 'react-native';
 
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
@@ -19,6 +19,9 @@ import { useYearAndMonthContext, YearAndMonthProvider } from '@/context/YearAndM
 import React from 'react';
 
 import { getUser } from '@/db/getFromDb';
+
+
+
 
 //Debo tambien crear una funcion para crear la estructura de la base de datos si no existe e insertar el usuario guest
 
@@ -45,15 +48,17 @@ export default function App() {
 
     const db = useSQLiteContext();
 
-    useEffect(() => {
-        db.withTransactionAsync(async () => {
-            await getUser({ isLogged, db, email: 'guest@example.com', password: '', setUser })
-        });
+    // useEffect(() => {
+    //     db.withTransactionAsync(async () => {
+    //         await getUser({ isLogged, db, email: 'guest@example.com', password: '', setUser })
+    //     });
 
-    }, [db]);
+    // }, [db]);
+
+
+
 
     useEffect(() => {
-        // createDatabase()
         loadDatabase()
             .then(() => setDbLoaded(true))
             .catch((error) => console.log(error));
@@ -76,26 +81,19 @@ export default function App() {
                 style={styles.headerImage}
                 resizeMode='cover'
             ></Image>
-            <ThemedView style={styles.titleContainer}>
-                <ThemedText type="title">My Finance</ThemedText>
-                <ThemedView style={{ margin: 60, gap: 30 }}>
+            <ThemedView style={styles.container}>
+                <ThemedText type="title" style={styles.title}>My Finance</ThemedText>
+                <ThemedView style={styles.buttonContainer}>
+                    {!isLogged
+                        ? (<CustomButton
+                            title='New User'
+                            handlePress={() => router.push('/insertUser')}
+                            textStyles={buttonStyles.buttonIn}
+                        />)
+                        // Si esta logeado, se redirige a la pantalla de inicio
+                        : (<Redirect href="/home" />)
 
-                    <CustomButton
-                        title='Guest'
-                        handlePress={() => router.push('/home')}
-                        textStyles={buttonStyles.buttonUp}
-                    />
-
-                    <CustomButton
-                        title='Sign In'
-                        handlePress={() => router.push('/sign-in')}
-                        textStyles={buttonStyles.buttonIn}
-                    />
-                    <CustomButton
-                        title='Sign Up'
-                        handlePress={() => router.push('sign-up')}
-                        textStyles={buttonStyles.buttonUp}
-                    />
+                    }
                 </ThemedView>
             </ThemedView>
 
@@ -104,12 +102,14 @@ export default function App() {
     );
 }
 
+const { height } = Dimensions.get('window');
+
 const styles = StyleSheet.create({
-    titleContainer: {
+    container: {
         flexDirection: 'column',
         alignItems: 'center',
         gap: 18,
-        height: "100%",
+        height,
         paddingTop: 50,
 
     },
@@ -120,6 +120,20 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         zIndex: -1,
+    },
+    title: {
+        width: '100%',
+        height: "30%",
+        textAlignVertical: "center",
+        textAlign: "center",
+        fontSize: 40,
+    },
+    buttonContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 20,
     },
 });
 

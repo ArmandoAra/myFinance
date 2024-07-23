@@ -22,7 +22,7 @@ import { SQLiteProvider } from 'expo-sqlite/next';
 
 
 //Icono de usuario negro redondeado con la inicial del nombre en blanco
-const userIcon = ({ currentUser, isLogged }: { currentUser: string, isLogged: boolean }) => {
+const userIcon = ({ user, isLogged }: { user: string, isLogged: boolean }) => {
     if (isLogged) {
         return (<ThemedView
             style={{
@@ -32,12 +32,12 @@ const userIcon = ({ currentUser, isLogged }: { currentUser: string, isLogged: bo
                 borderRadius: 50
             }} >
             <ThemedText style={{ fontSize: 22 }}>
-                {currentUser[0].toUpperCase()}
+                {user}
             </ThemedText>
         </ThemedView >
         )
     }
-    return (<ThemedText>{currentUser}</ThemedText>)
+    return (<ThemedText>{user}</ThemedText>)
 }
 
 const logOutIcon = ({ isLogged }: { isLogged: boolean }) => {
@@ -56,7 +56,7 @@ export default function HomeLayout() {
     const { isLogged, user } = useGlobalContext();
 
     //Obtenemos el usuario y si no existe entramos como invitado
-    const [currentUser, setCurrentUser] = useState(user.name || 'Invitado');
+    const [currentUser, setCurrentUser] = useState(user || '');
 
     return (
         <React.Suspense fallback={<ActivityIndicator size='large' color='blue' />}>
@@ -68,18 +68,16 @@ export default function HomeLayout() {
                     <Stack.Screen
                         name="home" //El nomber tiene que ser igual al que se pone en el archivo de rutas
                         options={{
-                            headerTitle: () => userIcon({ currentUser, isLogged }),
-                            headerStyle: {
-                                backgroundColor: '#003b35',
-                            },
+                            headerTitle: () => userIcon({ user, isLogged }),
+
                             headerTintColor: '#fff',
                             headerTitleStyle: {
                                 fontWeight: 'bold',
                             },
                             headerTitleAlign: "center",
                             headerShadowVisible: false,
-                            // headerLeft va a contener el icono de usuario o el de invitado
-                            headerRight: () => logOutIcon({ isLogged }),
+                            headerLeft: () => null,
+
                         }}
 
                     />

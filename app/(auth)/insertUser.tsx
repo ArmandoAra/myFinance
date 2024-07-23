@@ -3,23 +3,22 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import React, { useState } from 'react'
 import { View, Text, StyleSheet, Alert, Image } from 'react-native';
-import CustomButton from '@/components/buttons/CustomButton';
 
 //Components
 import FormField from '@/components/auth/FormField';
+import CustomButton from '@/components/buttons/CustomButton';
 import { Link, router } from 'expo-router';
-
-//Context
-import { useGlobalContext } from '@/context/GlobalProvider';
 import { createUser } from '@/lib/appwrite';
 
-const SignIn = () => {
-    const { setUser, setIsLogged } = useGlobalContext();
+import { useGlobalContext } from '@/context/GlobalProvider';
+import { insertUser } from '@/db/mf';
+import { inserUserByName } from '@/db/dbTools';
+import { set } from 'date-fns';
+
+const SignUp = () => {
+    const { setUser, setIsLogged, setLoading, user } = useGlobalContext();
     const [form, setForm] = useState({
         userName: "",
-        email: "",
-        password: "",
-        confirm_password: ""
     })
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -27,24 +26,19 @@ const SignIn = () => {
     //Funcion para enviar los datos del formulario
     const submit = async () => {
 
-        if (!form.email || !form.password || !form.confirm_password || !form.userName) {
+        if (!form.userName) {
             Alert.alert("All fields are required");
-            return;
-        }
-
-        if (form.password !== form.confirm_password) {
-            Alert.alert("Passwords don't match");
             return;
         }
 
         setIsSubmitting(true);
         try {
-            const result = await createUser({
-                email: form.email.trim(), //Para evitar espacios en blanco
-                password: form.password,
-                userName: form.userName
-            })
-            setUser(result);
+            const result = await inserUserByName(
+                form.userName,
+                setUser,
+                setIsLogged,
+                setLoading
+            )
             setIsLogged(true);
 
             // Set the user in the global state
@@ -58,8 +52,6 @@ const SignIn = () => {
 
     }
 
-
-
     return (
         <ParallaxScrollView
             headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -69,27 +61,20 @@ const SignIn = () => {
                 resizeMode='cover'
             ></Image>
             <ThemedView style={styles.container}>
-                <ThemedText type="title">Sing In</ThemedText>
-                <ThemedText type="subtitle" >Write your Email and Password</ThemedText>
-                <ThemedView style={{ marginTop: 20, gap: 20 }}>
+                <ThemedText type="title">Welcome</ThemedText>
+                <ThemedText type="subtitle" >Write your name:</ThemedText>
+                <ThemedView style={{ marginTop: 20, gap: 10 }}>
                     <FormField
-                        title="Email"
-                        value={form.email}
-                        handleChangeText={(text: string) => setForm({ ...form, email: text })}
-
-                    />
-                    <FormField
-                        title="Password"
-                        value={form.password}
-                        handleChangeText={(text: string) => setForm({ ...form, password: text })}
+                        title="Name"
+                        value={form.userName}
+                        handleChangeText={(text: string) => setForm({ ...form, userName: text })}
                     />
                     <CustomButton
-                        title='Sign In'
+                        title='Sign Up'
                         handlePress={() => submit()}
-                        textStyles={styles.buttonIn}
-                        isLoading={isSubmitting}
+                        textStyles={styles.buttonUp}
                     />
-                    <ThemedText>Don't have an account? <Link href="/sign-up" style={{ color: "#4B70F5" }}>Sign Up</Link></ThemedText>
+                    <ThemedText>Don't have an account? <Link href="/sign-up" style={{ color: "#219C90" }}>Sign In</Link></ThemedText>
                 </ThemedView>
             </ThemedView>
         </ParallaxScrollView>
@@ -106,16 +91,16 @@ const styles = StyleSheet.create({
         paddingTop: 20,
         paddingBottom: 420,
     },
-    buttonIn: {
+    buttonUp: {
         color: "white",
         fontSize: 20,
         height: 60,
-        backgroundColor: "#219C90",
+        backgroundColor: "#4B70F5",
         borderRadius: 10,
         display: "flex",
         textAlign: "center",
+        verticalAlign: "middle",
         marginTop: 20,
-        verticalAlign: "middle"
     },
     headerImage: {
         width: '100%',
@@ -127,4 +112,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default SignIn;
+export default SignUp;

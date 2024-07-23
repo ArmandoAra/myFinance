@@ -21,6 +21,8 @@ export function EditSpend({
     const { id, month, year, service, amount, type, description, createdAt } = editSpend;
 
 
+
+
     const [data, setData] = useState<Spend>({
         id,
         month,
