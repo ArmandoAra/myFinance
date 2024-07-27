@@ -25,7 +25,6 @@ export const styles = StyleSheet.create({
         marginVertical: 20,
         gap: 5,
         borderRadius: 15,
-        backgroundColor: "red"
     },
     listHeader: {
         backgroundColor: '#219C90',

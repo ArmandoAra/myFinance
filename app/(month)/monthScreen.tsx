@@ -1,14 +1,13 @@
 
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { StyleSheet, Dimensions, Pressable, SafeAreaView } from 'react-native';
+import RNPickerSelect from 'react-native-picker-select';
 
 //Context
-import { useSQLiteContext } from 'expo-sqlite';
 import { useYearAndMonthContext } from '@/context/YearAndMonthProvider';
-import { useGlobalContext } from '@/context/GlobalProvider';
 
 //Style
-const { height } = Dimensions.get('window');
+import { styles } from './styles';
 import { FontAwesome } from '@expo/vector-icons';
 
 //db
@@ -25,8 +24,7 @@ import { Amount } from '@/components/spendCard/amount';
 
 //Interfaces
 import { Spend } from '@/constants/interfaces';
-import CustomButton from '@/components/buttons/CustomButton';
-import { router, useFocusEffect } from 'expo-router';
+
 
 
 function MonthScreen() {
@@ -35,6 +33,7 @@ function MonthScreen() {
 
     const [amount, setAmount] = useState<number>(0);
     const [spends, setSpends] = useState<Spend[]>([]);
+    const [filteredSpends, setFilteredSpends] = useState<Spend[]>(spends);
     const [editSpend, setEditSpend] = useState<Spend>({
         id: 0,
         service: '',
@@ -69,6 +68,32 @@ function MonthScreen() {
         setShowEditInput(true);
     }
 
+    //SelectType
+    const [selectedType, setSelectedType] = useState<string>('All Spends');
+
+
+    useEffect(() => {
+        if (selectedType === 'All Spends') {
+            setFilteredSpends(spends);
+        } else {
+            setFilteredSpends(spends.filter(spend => spend.type === selectedType));
+        }
+
+    }, [selectedType, spends]);
+
+    const spendTypes = useMemo(() => {
+        const types = new Set(spends.map(spend => spend.type));
+        if (!types) return
+        return Array.from(types).concat('All Spends')
+    }, [spends]) || [];
+
+    const calcSpendsByType = ({ spends, selectedType }: { spends: Spend[], selectedType: string }) => {
+        if (selectedType !== 'All Spends') {
+            return spends.filter(spend => spend.type === selectedType).reduce((acc, spend) => acc + spend.amount, 0)
+        }
+        return spends.reduce((acc, spend) => acc + spend.amount, 0)
+    }
+
     return (
 
         <SafeAreaView style={{ flex: 1, backgroundColor: '#383838' }} >
@@ -78,48 +103,20 @@ function MonthScreen() {
                 </ThemedView>
                 <ThemedView>
 
-                    {/* Income */}
+                    {/* @@@@@@@@@@@@@@@@@@@@@@ Income @@@@@@@@@@@@@@@@@@@@@@@@*/}
                     <ThemedView
-                        style={{
-
-                            flexDirection: 'row',
-                            width: '90%',
-                            height: 40,
-                            borderRadius: 10,
-                            margin: 10,
-                            alignSelf: 'center',
-
-                        }}
+                        style={styles.incomeContainer}
                     >
-                        <ThemedText style={{
-                            fontSize: 20,
-                            textAlign: "center",
-                            backgroundColor: '#31363F',
-                            textAlignVertical: "center",
-                            borderRadius: 10,
-                            width: "30%"
-                        }}>Income: </ThemedText>
-                        <ThemedText style={{
-                            fontSize: 20,
-                            backgroundColor: '#31363F',
-                            width: "50%",
-                            textAlign: "center",
-                            textAlignVertical: "center",
-                            borderRadius: 10,
-                            left: "30%"
-                        }} >{amount} </ThemedText>
-
+                        <ThemedText style={styles.incomeText}>Income: </ThemedText>
                         <Pressable
                             onPress={() => setShowIncomeInput(!showIncomeInput)}
-                            style={{
-                                position: "relative",
-                                left: "100%",
-                                backgroundColor: "#219C90",
-                                height: '100%',
-                                width: "10%",
-                                borderRadius: 10,
-                            }}><ThemedText style={{ textAlign: "center", textAlignVertical: "center", height: "100%" }}>+</ThemedText></Pressable>
+                            style={styles.incomeAmountButton}>
+                            <ThemedText style={styles.incomeAmountText} >
+                                {"$" + amount}
+                            </ThemedText>
+                        </Pressable>
                     </ThemedView>
+
                     {showIncomeInput &&
                         <IncomeInput
                             setShowIncomeInput={setShowIncomeInput}
@@ -130,6 +127,32 @@ function MonthScreen() {
                             month={selectedMonth}
                         />}
 
+                    {/* @@@@@@@@@@@@@@@@@@@@@ Sort By @@@@@@@@@@@@@@@@@@@@@ */}
+                    <ThemedView
+                        style={styles.pickerContainer}
+                    >
+                        {/* Select Month */}
+                        <RNPickerSelect
+                            placeholder={{
+                                label: ` ${selectedType}`,
+                                value: selectedType,
+                                color: '#219C90',
+                            }}
+                            value={selectedType}
+                            onValueChange={(e) => setSelectedType(e)}
+                            items={spendTypes.map((spend) => ({ label: spend, value: spend })) || []}
+                            style={pickerStyles}
+                            useNativeAndroidPickerStyle={false}
+                        />
+                    </ThemedView>
+
+                    {/*@@@@@@@@@@@@@@@@@@@@@@ Spends List @@@@@@@@@@@@@@@@@@@*/}
+                    <SpendList
+                        list={spends.filter(spend => selectedType === 'All Spends' ? spend : spend.type === selectedType)}
+                        setSpends={setSpends}
+                        showAmountInfo={true}
+                        handleEdit={handleEdit}
+                    />
                     {showSpendInput &&
                         <SpendInput
                             setShowSpendInput={setShowSpendInput}
@@ -143,84 +166,36 @@ function MonthScreen() {
                             setShowEditInput={setShowEditInput}
                         />}
 
-                    {/* Sort By */}
-                    <ThemedView
-                        style={{
-                            flexDirection: 'row',
-                            width: '90%',
-                            height: 40,
-                            borderRadius: 10,
-                            margin: 10,
-                            alignSelf: 'center',
-                        }}
-                    >
+                    {/*@@@@@@@@@@@@@@ Total Spends Amount @@@@@@@@@@@@@@@@@*/}
+                    <ThemedView style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        flexDirection: 'row',
+                        backgroundColor: '#31363F',
+                        width: '95%',
+                        height: 50,
+                        borderRadius: 15,
+                        margin: 10
+                    }}>
                         <ThemedText style={{
                             fontSize: 20,
                             textAlign: "center",
                             backgroundColor: '#31363F',
                             textAlignVertical: "center",
                             borderRadius: 10,
-                            width: "30%"
-                        }}>Sort by: </ThemedText>
-                        <ThemedText style={{
-                            fontSize: 20,
-                            backgroundColor: '#31363F',
-                            width: "50%",
-                            textAlign: "center",
-                            textAlignVertical: "center",
-                            borderRadius: 10,
-                            left: "30%"
-                        }}>Rent </ThemedText>
-                        <ThemedText style={{
-                            position: "relative",
-                            backgroundColor: "#219C90",
-                            left: "100%",
-                            width: "10%",
-                            color: "white",
-                            textAlign: "center",
-                            textAlignVertical: "center",
-                            borderRadius: 10,
-                        }}>+</ThemedText>
-                    </ThemedView>
-
-                    {/* Spends List */}
-                    <SpendList
-                        list={spends}
-                        setSpends={setSpends}
-                        showAmountInfo={true}
-                        handleEdit={handleEdit}
-                    />
-
-                    {/* Total */}
-                    <ThemedView
-                        style={{
-                            flexDirection: 'row',
-                            flexShrink: 1,
-                            alignItems: 'center',
-                            justifyContent: 'space-around',
-                            alignSelf: 'center',
-                            marginTop: 10,
-                            backgroundColor: '#31363F',
-                            width: '90%',
-                            height: 50,
-                            borderRadius: 10,
-                        }}
-                    >
-
-                        <ThemedText style={{ fontSize: 23, backgroundColor: "#31363F", textAlignVertical: "center", left: "50%" }}>Total:</ThemedText>
-                        <Amount showInfo={false} amount={spends.reduce((acc, spend) => acc + spend.amount, 0)} />
-
-
+                            width: "40%"
+                        }}>Total Spends: </ThemedText>
+                        <Amount amount={calcSpendsByType({ spends, selectedType })} />
                     </ThemedView>
 
                     {/* Add Button */}
                     <Pressable
                         onPress={() => setShowSpendInput(!showSpendInput)}
                         style={{
-                            borderRadius: 30,
+                            borderRadius: 50,
                             display: "flex",
-                            width: "90%",
-                            height: 50,
+                            width: 80,
+                            height: 80,
                             justifyContent: "center",
                             alignItems: "center",
                             alignSelf: "center",
@@ -232,78 +207,27 @@ function MonthScreen() {
                     </Pressable>
 
                 </ThemedView>
-
             </ThemedView>
-
-
         </SafeAreaView>
 
 
     )
 }
 
+export default MonthScreen;
 
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column',
-        height,
-        backgroundColor: '#383838',
-        alignContent: 'space-between',
-        marginTop: 20,
-    },
-    headerContainer: {
+export const pickerStyles = StyleSheet.create({
+    inputAndroid: {
+        fontSize: 22,
+        fontWeight: 'bold',
         width: '100%',
-        alignItems: 'center',
-        marginTop: 7,
-    },
-    listHeader: {
-        paddingTop: 20,
         height: 50,
-        fontSize: 34,
-        color: '#BBE9FF',
-    },
-    item: {
-        backgroundColor: '#f9c2ff',
-        padding: 20,
-        marginVertical: 8,
-        marginHorizontal: 16,
-    },
-    title: {
-        fontSize: 32,
-    },
-    buttonGoTo: {
-        color: "white",
-        borderRadius: 30,
-        display: "flex",
-        width: 200,
-        height: 50,
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop: 220,
-    },
-    iconContainer: {
-        top: 10,
-        right: 12,
-    },
-    row: {
-        flexDirection: "row",
-        alignItems: "center",
-        alignContent: "center",
-        borderRadius: 35,
-        gap: 6,
-    },
-    categoryContainer: {
-        borderRadius: 10,
-        paddingHorizontal: 10,
-        paddingVertical: 3,
-    },
-    categoryText: {
-        fontSize: 12,
+        textAlign: 'center',
+        borderRadius: 15,
+        alignSelf: 'center',
+        margin: 0,
+        color: 'white',
+        backgroundColor: '#219C90',
     },
 })
-
-
-
-export default MonthScreen;
