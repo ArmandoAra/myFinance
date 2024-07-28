@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import { Dimensions, FlatList, Pressable } from "react-native";
+import { Dimensions, FlatList } from "react-native";
 import { ThemedView } from "../ThemedView";
 import { Amount } from "./amount";
 import { Card } from "./card";
@@ -11,9 +11,6 @@ import { EditSpend } from './editSpend';
 
 //Interfaces
 import { Spend } from "@/constants/interfaces";
-import { FontAwesome5 } from "@expo/vector-icons";
-import { ShowDescription } from "./showDescription";
-import { ThemedText } from "../ThemedText";
 
 const { height, width } = Dimensions.get('window');
 import { LinearGradient } from 'expo-linear-gradient';
@@ -22,12 +19,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 export function SpendList({
     list,
     setSpends,
-    showAmountInfo,
     handleEdit
 }: {
     list: Spend[],
     setSpends: React.Dispatch<React.SetStateAction<Spend[]>>,
-    showAmountInfo: boolean
     handleEdit: ({ id, service, date, type, amount }: { id: number; service: string; date: Date; type: string; amount: number; }) => void
 }) {
 

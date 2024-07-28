@@ -8,6 +8,8 @@ import { ThemedView } from "../ThemedView";
 import { Spend } from '../../constants/interfaces';
 
 import { insertSpend } from "@/db/dbTools";
+import { Calculator } from "../calculator/Calculator";
+import { SimpleLineIcons } from '@expo/vector-icons';
 
 
 export function SpendInput({
@@ -20,6 +22,8 @@ export function SpendInput({
     year: number,
 }) {
     const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
+    const [isCalculatorOpen, setIsCalculatorOpen] = useState(false); // Estado para gestionar la calculadora
+
 
 
     const [data, setData] = useState<Spend>({
@@ -53,6 +57,24 @@ export function SpendInput({
         insertSpend({ data });
         setShowSpendInput(false);
     };
+
+    // Amount Calculator
+    const handleCalculatorApply = (amount: number) => {
+        setData((prevData) => ({
+            ...prevData,
+            amount,
+        }));
+    };
+
+    const handleClose = (amount: string) => {
+        if (amount === "") {
+            setData((prevData) => ({
+                ...prevData,
+                amount: 0,
+            }));
+        }
+        setIsCalculatorOpen(false);
+    }
 
 
     return (
@@ -92,8 +114,18 @@ export function SpendInput({
                     placeholder="Insert Amount"
                     placeholderTextColor="white"
                     keyboardType='decimal-pad'
-                />
+                /><Pressable
+                    onPress={() => setIsCalculatorOpen(!isCalculatorOpen)}
+                    style={styles.calcIconContainer}>
+                    <SimpleLineIcons name="calculator" size={24} color="white" />
+                </Pressable>
             </ThemedView>
+            {isCalculatorOpen &&
+                <Calculator
+                    onClose={handleClose}
+                    onApply={handleCalculatorApply}
+                    currentAmount={data.amount}
+                />}
             {/* Date */}
             {showDatePicker &&
                 <RNDateTimePicker
@@ -171,6 +203,15 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         width: "78%",
         alignSelf: "center"
+    },
+    calcIconContainer: {
+        display: "flex",
+        width: 80,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "transparent",
+
     },
     buttonContainer: {
         flexDirection: "row",
