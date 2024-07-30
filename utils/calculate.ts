@@ -1,3 +1,4 @@
+import { YearDataResult } from "@/db/dbTools";
 
 
 export function sumAmountsByMonth(arr: { amount: number, month: string }[]) {
@@ -19,4 +20,23 @@ export function sumAmountsByMonth(arr: { amount: number, month: string }[]) {
     return result;
 
 
+}
+
+
+//sumar todos los amounts y spendAmounts del año
+export interface YearAndMonthData {
+    month: string;
+    amount: number;
+    spendAmount: number;
+}
+
+export function sumAmountsAndSpendAmounts(data: YearAndMonthData[]): YearDataResult {
+    return data.reduce(
+        (acc, entry) => {
+            acc.amounts += entry.amount;
+            acc.spendAmounts += entry.spendAmount;
+            return acc;
+        },
+        { amounts: 0, spendAmounts: 0 }
+    );
 }

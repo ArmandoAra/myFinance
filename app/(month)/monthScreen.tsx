@@ -56,17 +56,18 @@ function MonthScreen() {
         getMonthIncome({ amount, year: selectedYear, month: selectedMonth, setAmount });
     }, [showIncomeInput])
 
+    function handleEdit({ id, service, date, type, amount, description }: { id: number; service: string; date: Date; type: string; amount: number, description: string }) {
+        const createdAt = new Date(date);
+        setEditSpend({ id, service, createdAt, type, amount, month: selectedMonth, year: selectedYear, description });
+        setShowEditInput(true);
+    }
 
     // Obtener los gastos del mes
     useEffect(() => {
         getMonthSpends(selectedYear, selectedMonth, setSpends);
     }, [spends.length, showSpendInput, showEditInput])
 
-    function handleEdit({ id, service, date, type, amount }: { id: number; service: string; date: Date; type: string; amount: number }) {
-        const createdAt = new Date(date);
-        setEditSpend({ id, service, createdAt, type, amount, month: selectedMonth, year: selectedYear, description: '' });
-        setShowEditInput(true);
-    }
+
 
     //SelectType
     const [selectedType, setSelectedType] = useState<string>('All Spends');

@@ -18,14 +18,14 @@ export function EditSpend({
     type: string;
     amount: number;
     description: string;
-    handleEdit: ({ id, service, date, type, amount }: { id: number; service: string; date: Date; type: string; amount: number; }) => void;
+    handleEdit: ({ id, service, date, type, amount, description }: { id: number; service: string; date: Date; type: string; amount: number; description: string }) => void;
 }) {
 
 
 
     return (
         <Pressable
-            onPress={() => handleEdit({ id, service, date, type, amount })}
+            onPress={() => handleEdit({ id, service, date, type, amount, description })}
             style={{ width: 50, height: 50, backgroundColor: "#219C90", borderRadius: 15, justifyContent: "center", alignItems: "center", overflow: "hidden" }}
         >
             <ThemedView style={{ backgroundColor: "transparent", width: "auto", height: "auto" }}>

@@ -15,7 +15,7 @@ import { useFonts } from 'expo-font';
 
 const goHomeIcon = () => {
     return (
-        <Pressable onPress={() => router.push("/")} style={{ marginLeft: 20 }}>
+        <Pressable onPress={() => router.push("/home")} style={{ marginLeft: 20 }}>
             <MaterialIcons name="home" size={24} color="white" />
         </Pressable>
     )
@@ -42,11 +42,17 @@ export default function RootLayout() {
                                     headerStyle: { backgroundColor: "#003b35" },
                                     headerLeft: () => goHomeIcon(),
                                 }} />
-                                <Stack.Screen name="(home)" options={{ headerShown: false, }} />
+                                <Stack.Screen name="(home)" options={{
+                                    headerShown: false,
+                                }} />
                                 <Stack.Screen name="(month)" options={{
-                                    headerShown: true, headerTitle: "", headerStyle: {
+                                    headerShown: true,
+                                    headerTitle: "",
+                                    headerStyle: {
                                         backgroundColor: '#003b35',
+
                                     },
+                                    headerLeft: () => goHomeIcon(),
                                 }} />
 
                                 <Stack.Screen name="+not-found" />

@@ -13,7 +13,6 @@ import { createUser } from '@/lib/appwrite';
 import { useGlobalContext } from '@/context/GlobalProvider';
 import { insertUser } from '@/db/mf';
 import { inserUserByName } from '@/db/dbTools';
-import { set } from 'date-fns';
 
 const SignUp = () => {
     const { setUser, setIsLogged, setLoading, user } = useGlobalContext();
@@ -30,7 +29,6 @@ const SignUp = () => {
             Alert.alert("All fields are required");
             return;
         }
-
         setIsSubmitting(true);
         try {
             const result = await inserUserByName(
@@ -43,7 +41,7 @@ const SignUp = () => {
 
             // Set the user in the global state
 
-            router.replace("/(tabs)");
+            router.replace("/home");
         } catch (error) {
             Alert.alert("Error creating user");
         } finally {
@@ -74,7 +72,6 @@ const SignUp = () => {
                         handlePress={() => submit()}
                         textStyles={styles.buttonUp}
                     />
-                    <ThemedText>Don't have an account? <Link href="/sign-up" style={{ color: "#219C90" }}>Sign In</Link></ThemedText>
                 </ThemedView>
             </ThemedView>
         </ParallaxScrollView>
@@ -92,14 +89,12 @@ const styles = StyleSheet.create({
         paddingBottom: 420,
     },
     buttonUp: {
-        color: "white",
         fontSize: 20,
-        height: 60,
-        backgroundColor: "#4B70F5",
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 50,
         borderRadius: 10,
-        display: "flex",
-        textAlign: "center",
-        verticalAlign: "middle",
         marginTop: 20,
     },
     headerImage: {

@@ -38,7 +38,7 @@ export function IncomeInput({
             height: 1000,
             position: 'absolute',
             backgroundColor: 'black',
-            zIndex: 1,
+            zIndex: 20,
             gap: 10,
         }}>
             <TextInput

@@ -6,7 +6,6 @@ import { ThemedView } from '../ThemedView';
 import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { z } from 'zod';
 import { HelloWave } from '../../../lsd/components/HelloWave';
-import { TextWrap } from '@vicons/tabler';
 import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
 
 export function SpendInfo({ id, service, date, type, amount, description, }: {
@@ -25,7 +24,7 @@ export function SpendInfo({ id, service, date, type, amount, description, }: {
         <ThemedView style={{ width: "100%", flexDirection: "row", overflow: "hidden", borderRadius: 15 }}>
             <ThemedView style={styles.typeTextContainer}>
                 <AutoSizeText
-                    fontSize={20}
+                    fontSize={12}
                     mode={ResizeTextMode.max_lines}
                     numberOfLines={1}
                     style={styles.typeText}
@@ -87,10 +86,10 @@ const styles = StyleSheet.create({
     },
     typeText: {
         backgroundColor: "transparent",
+        fontSize: 12,
         color: "white",
         padding: 2,
-        height: 50,
-        width: 50,
+
         textAlignVertical: "center",
         textAlign: "center"
     },

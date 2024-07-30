@@ -1,4 +1,4 @@
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, SimpleLineIcons } from "@expo/vector-icons";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import React, { useState } from "react";
 import { TextInput, Pressable, StyleSheet } from "react-native";
@@ -8,6 +8,7 @@ import { ThemedView } from "../ThemedView";
 import { Spend } from '../../constants/interfaces';
 
 import { updateSpend } from "@/db/dbTools";
+import { Calculator } from "../calculator/Calculator";
 
 
 export function EditSpend({
@@ -20,6 +21,25 @@ export function EditSpend({
     const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
     const { id, month, year, service, amount, type, description, createdAt } = editSpend;
 
+    //Calculator
+    const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
+
+    const handleCalculatorApply = (amount: number) => {
+        setData((prevData) => ({
+            ...prevData,
+            amount,
+        }));
+    };
+
+    const handleClose = (amount: string) => {
+        if (amount === "") {
+            setData((prevData) => ({
+                ...prevData,
+                amount: 0,
+            }));
+        }
+        setIsCalculatorOpen(false);
+    }
 
 
 
@@ -51,8 +71,8 @@ export function EditSpend({
     };
 
     const handleSubmit = () => {
-        updateSpend({ data });
-        setShowEditInput(false);
+        updateSpend({ data, setShowEditInput });
+
     };
 
 
@@ -94,7 +114,18 @@ export function EditSpend({
                     placeholderTextColor="white"
                     keyboardType='decimal-pad'
                 />
+                <Pressable
+                    onPress={() => setIsCalculatorOpen(!isCalculatorOpen)}
+                    style={styles.calcIconContainer}>
+                    <SimpleLineIcons name="calculator" size={24} color="white" />
+                </Pressable>
             </ThemedView>
+            {isCalculatorOpen &&
+                <Calculator
+                    onClose={handleClose}
+                    onApply={handleCalculatorApply}
+                    currentAmount={data.amount}
+                />}
             {/* Date */}
             {showDatePicker &&
                 <RNDateTimePicker
@@ -207,5 +238,14 @@ const styles = StyleSheet.create({
     },
     cancelButton: {
         backgroundColor: "red",
-    }
+    },
+    calcIconContainer: {
+        display: "flex",
+        width: 80,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "transparent",
+
+    },
 })

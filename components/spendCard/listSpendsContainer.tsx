@@ -23,7 +23,7 @@ export function SpendList({
 }: {
     list: Spend[],
     setSpends: React.Dispatch<React.SetStateAction<Spend[]>>,
-    handleEdit: ({ id, service, date, type, amount }: { id: number; service: string; date: Date; type: string; amount: number; }) => void
+    handleEdit: ({ id, service, date, type, amount, description }: { id: number; service: string; date: Date; type: string; amount: number; description: string }) => void
 }) {
 
     return (

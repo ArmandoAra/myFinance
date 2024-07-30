@@ -30,6 +30,7 @@ const FormField = ({ title, value, placeholder, handleChangeText, ...props }: {
                     backgroundColor: "#26355D",
                     borderColor: Colors[colorScheme ?? 'light'].text,
                     color: Colors[colorScheme ?? 'light'].text,
+                    textAlign: 'center',
                     borderWidth: 1,
                     padding: 10,
                     borderRadius: 5,

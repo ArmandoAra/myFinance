@@ -22,7 +22,7 @@ export function SpendInput({
     year: number,
 }) {
     const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
-    const [isCalculatorOpen, setIsCalculatorOpen] = useState(false); // Estado para gestionar la calculadora
+    const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
 
 
 

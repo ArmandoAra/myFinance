@@ -17,8 +17,9 @@ import * as FileSystem from 'expo-file-system';
 import { Asset } from 'expo-asset';
 import { useYearAndMonthContext, YearAndMonthProvider } from '@/context/YearAndMonthProvider';
 import React from 'react';
+import { getUser } from '@/db/dbTools';
 
-import { getUser } from '@/db/getFromDb';
+
 
 
 
@@ -43,19 +44,16 @@ export const loadDatabase = async () => {
 
 export default function App() {
     const [dbLoaded, setDbLoaded] = useState<boolean>(false);
-    const { isLogged, setUser, user } = useGlobalContext();
+    const { isLogged, setUser, setIsLogged } = useGlobalContext();
     const { selectedYear } = useYearAndMonthContext();
 
     const db = useSQLiteContext();
 
-    // useEffect(() => {
-    //     db.withTransactionAsync(async () => {
-    //         await getUser({ isLogged, db, email: 'guest@example.com', password: '', setUser })
-    //     });
-
-    // }, [db]);
-
-
+    useEffect(() => {
+        db.withTransactionAsync(async () => {
+            await getUser(setUser, setIsLogged)
+        });
+    }, [db]);
 
 
     useEffect(() => {

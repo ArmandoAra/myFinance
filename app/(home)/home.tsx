@@ -30,9 +30,7 @@ import { getAllYearIncomes, getUser, getIdFromSelectedYear, getIdFromSelectedMot
 //Styles
 import { styles, pickerStyles } from './styles';
 
-interface IncomeMonth {
-    [key: string]: number;
-}
+
 
 const Home = () => {
     const {
@@ -41,21 +39,6 @@ const Home = () => {
         setSelectedYear,
         setSelectedMonth,
     } = useYearAndMonthContext();
-
-    const { isLogged, user, setUser } = useGlobalContext();
-
-    // #######User#########
-    useEffect(() => {
-        // getUser({ isLogged, db, email: 'guest@example.com', password: '', setUser })
-    }, [user])
-
-
-
-
-    useEffect(() => {
-
-
-    }, [selectedMonth, selectedYear]);
 
 
 

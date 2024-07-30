@@ -77,7 +77,6 @@ export default function HomeLayout() {
                             headerTitleAlign: "center",
                             headerShadowVisible: false,
                             headerLeft: () => null,
-
                         }}
 
                     />

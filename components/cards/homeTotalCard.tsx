@@ -4,15 +4,14 @@ import { FlatList, StyleSheet } from 'react-native';
 
 // Constants
 import {
-    rowHeaderColor, rowColorLighter, rowColorDarker
+    rowHeaderColor,
 } from "../../constants/Colors";
 import { useYearAndMonthContext } from "@/context/YearAndMonthProvider";
 
 //Db
-import { getAllYearSpends, getYearData, getYearIncome } from "@/db/dbTools";
-import use, { useCallback, useEffect, useState } from 'react';
-import { mergeAmountsAndSpends } from "@/utils/sortData";
-import { useFocusEffect, useNavigationState } from "@react-navigation/native";
+import { getYearData, YearDataResult } from "@/db/dbTools";
+import { useCallback, useState } from 'react';
+import { useFocusEffect } from "@react-navigation/native";
 
 
 
@@ -25,10 +24,7 @@ const exampleData = {
     totalUmst: 100,
     total: 1000
 }
-interface YearData {
-    amount: number;
-    month: string;
-}
+
 
 interface MonthData {
     spendAmount: number;
@@ -41,32 +37,26 @@ export interface YearAndMonthData {
     spendAmount: number;
 }
 
+type YearData = {
+    amounts: number;
+    spendAmounts: number;
+};
+
 export default function HomeTotalCard() {
 
-
-    const [yearData, setYearData] = useState<YearData[]>([])
-    const [monthData, setMonthData] = useState<MonthData[]>([])
+    const [yearData, setYearData] = useState<YearDataResult>()
     const [yearAndMonthData, setYearAndMonthData] = useState<YearAndMonthData[]>([])
 
     //Obtener selectedYear from context
     const { selectedYear } = useYearAndMonthContext();
-    //Obtener todos los Incomes del año seleccionado y meses
-    // useEffect(() => {
-    //     getYearData(selectedYear, setYearAndMonthData)
-    //     console.log(yearAndMonthData)
-    // }, [selectedYear])
+
 
     //Cada vez que cambie la ruta hacer un fetch de los datos
     useFocusEffect(
         useCallback(() => {
-            getYearData(selectedYear, setYearAndMonthData)
+            getYearData(selectedYear, setYearAndMonthData, setYearData)
         }, [selectedYear])
     );
-    //Obtener todos los spends del año seleccionado y meses
-
-    //Sumar todos los Incomes
-
-    //Sumar todos los Spends
 
     return (
 
@@ -75,40 +65,40 @@ export default function HomeTotalCard() {
                 <ThemedText style={styles.textHeader} >Total of the {exampleData.year}</ThemedText>
             </ThemedView>
             <ThemedView style={{ ...styles.rowHeader }}>
-                <ThemedText >Month</ThemedText>
+                <ThemedText style={{ fontSize: 24 }}>Month</ThemedText>
                 <ThemedView style={{ flexDirection: 'row', gap: 10 }}>
 
-                    <ThemedText >Spend</ThemedText>
-                    <ThemedText>Income</ThemedText>
+                    <ThemedText style={{ fontSize: 24 }}>Spend</ThemedText>
+                    <ThemedText style={{ fontSize: 24 }}>Income</ThemedText>
                 </ThemedView>
             </ThemedView>
             <FlatList
-                style={{ width: "100%", height: "40%" }}
+                style={{ width: "100%", height: "48%" }}
                 data={yearAndMonthData}
                 renderItem={({ item }) => (
-                    <ThemedView style={{ ...styles.row }}>
-                        <ThemedText >{item.month}</ThemedText>
+                    <ThemedView style={styles.row}>
+                        <ThemedText style={{ fontSize: 18 }} >{item.month}</ThemedText>
                         <ThemedView style={{ flexDirection: 'row', gap: 10 }}>
-                            <ThemedText style={{ color: '#AD2222' }}>{item.spendAmount} €</ThemedText>
-                            <ThemedText style={{ color: '#A6F576' }}>{item.amount.toFixed(2)} €</ThemedText>
+                            <ThemedText style={{ color: '#AD2222', fontSize: 18 }}>${item.spendAmount} </ThemedText>
+                            <ThemedText style={{ color: '#A6F576', fontSize: 18 }}>${item.amount.toFixed(2)} </ThemedText>
                         </ThemedView>
                     </ThemedView>)}
                 keyExtractor={(item) => (item.month).toString()}
 
             />
 
-            <ThemedView style={{ ...styles.rowHeader }}>
-                <ThemedText >Total</ThemedText>
-                <ThemedView style={{ flexDirection: 'row', gap: 10 }}>
-                    <ThemedText >Spends</ThemedText>
-                    <ThemedText>Incomes</ThemedText>
+            <ThemedView style={styles.rowHeader}>
+                <ThemedText style={{ fontSize: 20, width: "55%" }}>Total</ThemedText>
+                <ThemedView style={{ flexDirection: 'row', width: "45%" }}>
+                    <ThemedText style={{ fontSize: 20, width: "50%", textAlign: "center" }}>Spends</ThemedText>
+                    <ThemedText style={{ fontSize: 20, width: "50%", textAlign: "center" }}>Incomes</ThemedText>
                 </ThemedView>
             </ThemedView>
-            <ThemedView style={{ ...styles.rowHeader }}>
-                <ThemedText >Of the Year</ThemedText>
-                <ThemedView style={{ flexDirection: 'row', gap: 10 }}>
-                    <ThemedText style={{ color: '#AD2222' }}>{exampleData.totalSpend} €</ThemedText>
-                    <ThemedText style={{ color: '#A6F576' }}>{exampleData.totalNetIncome.toFixed(2)} €</ThemedText>
+            <ThemedView style={styles.rowHeader}>
+                <ThemedText style={{ width: "55%" }} >Of the Year</ThemedText>
+                <ThemedView style={{ flexDirection: 'row', width: "45%" }}>
+                    <ThemedText style={{ fontSize: 18, color: '#AD2222', width: "50%", textAlign: "center" }}>${yearData?.spendAmounts} </ThemedText>
+                    <ThemedText style={{ fontSize: 18, color: '#A6F576', width: "50%", textAlign: "center" }}>${yearData?.amounts} </ThemedText>
                 </ThemedView>
             </ThemedView>
 
@@ -155,7 +145,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         alignItems: 'flex-end',
         width: '100%',
-        marginVertical: 2,
+        marginVertical: 5,
     },
 })
 

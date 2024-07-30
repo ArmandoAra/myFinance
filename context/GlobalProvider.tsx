@@ -42,7 +42,7 @@ export const GlobalProvider: FC<GlobalProviderProps> = ({ children }) => {
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        getUser(setUser, setIsLogged, setLoading)
+        getUser(setUser, setIsLogged,)
     }, [user]);
 
 
