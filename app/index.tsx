@@ -44,23 +44,18 @@ export const loadDatabase = async () => {
 
 export default function App() {
     const [dbLoaded, setDbLoaded] = useState<boolean>(false);
-    const { isLogged, setUser, setIsLogged } = useGlobalContext();
+    const { isLogged, setUser, setIsLogged, user } = useGlobalContext();
     const { selectedYear } = useYearAndMonthContext();
 
     const db = useSQLiteContext();
-
-    useEffect(() => {
-        db.withTransactionAsync(async () => {
-            await getUser(setUser, setIsLogged)
-        });
-    }, [db]);
-
 
     useEffect(() => {
         loadDatabase()
             .then(() => setDbLoaded(true))
             .catch((error) => console.log(error));
     }, []);
+
+
 
     if (!dbLoaded) {
         return (

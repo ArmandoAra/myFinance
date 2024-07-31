@@ -25,23 +25,14 @@ const SignUp = () => {
     //Funcion para enviar los datos del formulario
     const submit = async () => {
 
-        if (!form.userName) {
+        if (!form.userName || form.userName === "") {
             Alert.alert("All fields are required");
             return;
         }
         setIsSubmitting(true);
         try {
-            const result = await inserUserByName(
-                form.userName,
-                setUser,
-                setIsLogged,
-                setLoading
-            )
-            setIsLogged(true);
-
-            // Set the user in the global state
-
-            router.replace("/home");
+            await inserUserByName(form.userName, setUser, setIsLogged, setLoading)
+                .then(() => router.replace("/home"));
         } catch (error) {
             Alert.alert("Error creating user");
         } finally {

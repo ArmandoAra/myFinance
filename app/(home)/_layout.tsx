@@ -55,9 +55,6 @@ export default function HomeLayout() {
 
     const { isLogged, user } = useGlobalContext();
 
-    //Obtenemos el usuario y si no existe entramos como invitado
-    const [currentUser, setCurrentUser] = useState(user || '');
-
     return (
         <React.Suspense fallback={<ActivityIndicator size='large' color='blue' />}>
             <SQLiteProvider
@@ -66,7 +63,7 @@ export default function HomeLayout() {
 
                 <Stack>
                     <Stack.Screen
-                        name="home" //El nomber tiene que ser igual al que se pone en el archivo de rutas
+                        name="home"
                         options={{
                             headerTitle: () => userIcon({ user, isLogged }),
 

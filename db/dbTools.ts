@@ -7,6 +7,7 @@ import { Spend } from "@/constants/interfaces";
 import { mergeAmountsAndSpends, sortByMonth, YearAndMonthData } from "@/utils/sortData";
 import { sum } from '../../mypf/src/components/utils/calculate';
 import { sumAmountsAndSpendAmounts, sumAmountsByMonth } from "@/utils/calculate";
+import { set } from 'date-fns';
 
 // Interface
 export interface User {
@@ -64,9 +65,8 @@ export async function inserUserByName(
         if (result.length === 0) {
             // Si no existe el usuario, entonces lo inserta
             try {
-                await db.runAsync('INSERT INTO User (name) VALUES (?)', [name])
-                    .then(() => { console.log('User inserted') })
-                setUser(name)
+                const result = await db.runAsync('INSERT INTO User (name) VALUES (?)', [name])
+                    .then(() => setUser(name))
                 setIsLogged(true)
                 setLoading(false)
 
@@ -74,11 +74,6 @@ export async function inserUserByName(
                 console.log('Error inserting user', error)
                 console.log(error)
             }
-
-            // Si existe el usuario, entonces entra con el nombre del usuario
-            setUser(result[0].name)
-            setIsLogged(true)
-            setLoading(false)
         }
     }
     catch (error) {
@@ -87,21 +82,28 @@ export async function inserUserByName(
     }
 }
 
-// Get User by Email
+
 export async function getUser(
     setUser: React.Dispatch<React.SetStateAction<string>>,
     setIsLogged: React.Dispatch<React.SetStateAction<boolean>>
 ) {
     const db = await SQLite.openDatabaseAsync('myFinance2.db');
+
     try {
         const result = await db.getAllAsync<{ name: string }>(`SELECT name FROM User`)
             .then((result) => {
-                return setUser(result[0].name)
+                console.log(result)
+                if (result.length === 0) {
+                    return setIsLogged(false)
+                } else {
+                    setIsLogged(true)
+                    return setUser(result[0].name)
+
+                }
             });
 
-        setIsLogged(true)
     } catch (error) {
-        console.log('Error getting user')
+        console.log('Error getting user on GetUser')
 
     }
 }

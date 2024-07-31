@@ -1,30 +1,17 @@
-import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import React, { useEffect, useState } from 'react'
-import { Dimensions, StyleSheet, Text } from 'react-native';
-
-// utils
-import { getMonthByNumber } from '@/utils/getMonth';
-
+import React from 'react'
 
 import RNPickerSelect from 'react-native-picker-select';
-import { AntDesign } from '@expo/vector-icons';
+
 
 //Components
 import CustomButton from '@/components/buttons/CustomButton';
 import HomeTotalCard from '@/components/cards/homeTotalCard';
 import { router } from 'expo-router';
 
+import { useYearAndMonthContext } from '@/context/YearAndMonthProvider';
 
-import { useYearAndMonthContext, YearAndMonthProvider } from '@/context/YearAndMonthProvider';
-import { useSQLiteContext } from 'expo-sqlite';
-import { useGlobalContext } from '@/context/GlobalProvider';
-
-const { height, width } = Dimensions.get('window');
-
-//getFromDb
-import { getAllYearIncomes, getUser, getIdFromSelectedYear, getIdFromSelectedMoth, } from '@/db/getFromDb';
 
 
 //Styles
