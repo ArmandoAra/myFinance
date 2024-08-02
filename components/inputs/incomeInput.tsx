@@ -6,6 +6,7 @@ import { AntDesign } from '@expo/vector-icons';
 
 //Db
 import { updateIncome } from "@/db/dbTools";
+import { useSQLiteContext } from "expo-sqlite/next";
 
 
 export function IncomeInput({
@@ -24,10 +25,10 @@ export function IncomeInput({
     setAmount: React.Dispatch<React.SetStateAction<number>>,
 }) {
 
-
+    const db = useSQLiteContext();
 
     function handleIncomeInput() {
-        updateIncome({ amount, month, year, setAmount })
+        updateIncome({ db, amount, month, year, setAmount })
         setShowIncomeInput(!showIncomeInput)
     }
 

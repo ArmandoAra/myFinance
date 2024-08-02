@@ -10,6 +10,7 @@ import { Spend } from '../../constants/interfaces';
 import { insertSpend } from "@/db/dbTools";
 import { Calculator } from "../calculator/Calculator";
 import { SimpleLineIcons } from '@expo/vector-icons';
+import { useSQLiteContext } from "expo-sqlite/next";
 
 
 export function SpendInput({
@@ -21,6 +22,7 @@ export function SpendInput({
     month: string,
     year: number,
 }) {
+    const db = useSQLiteContext();
     const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
     const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
 
@@ -54,7 +56,7 @@ export function SpendInput({
     };
 
     const handleSubmit = () => {
-        insertSpend({ data });
+        insertSpend({ data }, db);
         setShowSpendInput(false);
     };
 

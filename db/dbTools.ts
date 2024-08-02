@@ -12,6 +12,7 @@ export interface User {
 }
 
 export interface UpdateIncome {
+    db: SQLite.SQLiteDatabase;
     amount: number;
     year: number;
     month: string;
@@ -19,6 +20,7 @@ export interface UpdateIncome {
 }
 
 export interface GetMonthIncome {
+    db: SQLite.SQLiteDatabase;
     amount: number;
     year: number;
     month: string;
@@ -47,11 +49,11 @@ export interface MonthData {
 // User
 // Insert User
 export async function inserUserByName(
+    db: SQLite.SQLiteDatabase,
     name: string,
     setUser: React.Dispatch<React.SetStateAction<string>>,
     setIsLogged: React.Dispatch<React.SetStateAction<boolean>>,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>) {
-    const db = await SQLite.openDatabaseAsync('myFinance2.db');
     try {
         setLoading(true)
         const result = await db.getAllAsync<{ name: string }>(`SELECT name FROM User WHERE name = ?`, [name])
@@ -71,10 +73,10 @@ export async function inserUserByName(
 
 
 export async function getUser(
+    db: SQLite.SQLiteDatabase,
     setUser: React.Dispatch<React.SetStateAction<string>>,
     setIsLogged: React.Dispatch<React.SetStateAction<boolean>>
 ) {
-    const db = await SQLite.openDatabaseAsync('myFinance2.db');
 
     try {
         const result = await db.getAllAsync<{ name: string }>(`SELECT name FROM User`)
@@ -92,8 +94,8 @@ export async function getUser(
 
 // Income
 // Insert Income
-export async function insertNewIncome({ amount, month, year, setAmount }: UpdateIncome) {
-    const db = await SQLite.openDatabaseAsync('myFinance2.db');
+export async function insertNewIncome({ db, amount, month, year, setAmount }: UpdateIncome) {
+
     try {
         await db.runAsync('INSERT INTO Income (amount, month, year) VALUES (?, ?, ?)', [amount, month, year])
         setAmount(amount)
@@ -105,8 +107,7 @@ export async function insertNewIncome({ amount, month, year, setAmount }: Update
 
 
 //Update Income
-export async function updateIncome({ amount, month, year, setAmount }: UpdateIncome) {
-    const db = await SQLite.openDatabaseAsync('myFinance2.db');
+export async function updateIncome({ db, amount, month, year, setAmount }: UpdateIncome) {
 
     try {
         await db.runAsync('UPDATE Income SET amount = ? WHERE month = ? AND year = ?', [amount, month, year])
@@ -120,15 +121,14 @@ export async function updateIncome({ amount, month, year, setAmount }: UpdateInc
 
 // Get Income 
 //Month
-export async function getMonthIncome({ amount, year, month, setAmount }: GetMonthIncome) {
-    const db = await SQLite.openDatabaseAsync('myFinance2.db');
+export async function getMonthIncome({ db, amount, year, month, setAmount }: GetMonthIncome) {
     try {
         const result = await db.getAllAsync<{ amount: number }>('SELECT amount FROM Income WHERE month = ? AND year = ?', [month, year])
 
         if (result.length !== 0) {
             setAmount(result[0].amount)
         } else {
-            await insertNewIncome({ amount, month, year, setAmount })
+            await insertNewIncome({ db, amount, month, year, setAmount })
         }
     } catch (error) {
         console.log("getMonthIncome error", error)
@@ -136,8 +136,8 @@ export async function getMonthIncome({ amount, year, month, setAmount }: GetMont
 }
 
 // Get All Income from Year
-export async function getYearIncome(year: number, setYearData: React.Dispatch<React.SetStateAction<YearData[]>>) {
-    const db = await SQLite.openDatabaseAsync('myFinance2.db');
+
+export async function getYearIncome(db: SQLite.SQLiteDatabase, year: number, setYearData: React.Dispatch<React.SetStateAction<YearData[]>>) {
     try {
         const result = await db.getAllAsync<{ amount: number, month: string }>('SELECT amount,month FROM Income WHERE  year = ?', [year])
         const sorted = sortByMonth(result)
@@ -149,12 +149,11 @@ export async function getYearIncome(year: number, setYearData: React.Dispatch<Re
 
 // Update Income
 export async function updateMonthIncome(
+    db: SQLite.SQLiteDatabase,
     income: number,
     month: string,
     year: number,
 ) {
-
-    const db = await SQLite.openDatabaseAsync('myFinance2.db');
 
     try {
         await db.runAsync('UPDATE Income SET amount = ? WHERE month = ? AND year = ?', [income, month, year])
@@ -169,9 +168,9 @@ export async function updateMonthIncome(
 // Insert Spend
 export async function insertSpend(data: {
     data: Spend
-}) {
+
+}, db: SQLite.SQLiteDatabase,) {
     const { service, amount, type, description, createdAt, month, year } = data.data;
-    const db = await SQLite.openDatabaseAsync('myFinance2.db');
     const dateToInsert = createdAt.toISOString().split('T')[0];
     try {
         await db.runAsync('INSERT INTO Spend ( service, amount, type, description, createdAt, month, year) VALUES (?, ?, ?, ?, ?, ?, ?)', [service, amount, type.length > 0 ? type : "?", description, dateToInsert, month, year])
@@ -182,11 +181,10 @@ export async function insertSpend(data: {
 
 // Get Spend
 export async function getMonthSpends(
+    db: SQLite.SQLiteDatabase,
     selectedYear: number,
     selectedMonth: string,
     setSpends: React.Dispatch<React.SetStateAction<Spend[]>>) {
-
-    const db = await SQLite.openDatabaseAsync('myFinance2.db');
 
     try {
         const result = await db.getAllAsync<Spend>('SELECT * FROM Spend WHERE month = ? AND year = ?', [selectedMonth, selectedYear]);
@@ -208,10 +206,10 @@ export async function getMonthSpends(
 }
 
 export async function getAllYearSpends(
+    db: SQLite.SQLiteDatabase,
     selectedYear: number,
     setMonthData: React.Dispatch<React.SetStateAction<MonthData[]>>
 ) {
-    const db = await SQLite.openDatabaseAsync('myFinance2.db');
 
     try {
         const result = await db.getAllAsync<{ month: string, amount: number }>("SELECT month,amount FROM Spend WHERE  year = ?", [selectedYear])
@@ -222,10 +220,9 @@ export async function getAllYearSpends(
     }
 }
 
-export async function updateSpend({ data, setShowEditInput }: { data: Spend, setShowEditInput: (showSpendInput: boolean) => void }) {
+export async function updateSpend({ data, setShowEditInput, db }: { data: Spend, setShowEditInput: (showSpendInput: boolean) => void, db: SQLite.SQLiteDatabase }) {
     const { service, amount, type, description, createdAt, id } = data;
 
-    const db = await SQLite.openDatabaseAsync('myFinance2.db');
     const dateToInsert = createdAt.toISOString().split('T')[0];
     try {
         await db.runAsync(
@@ -239,8 +236,7 @@ export async function updateSpend({ data, setShowEditInput }: { data: Spend, set
 }
 
 // Delete Spend
-export async function deleteSpend(id: number) {
-    const db = await SQLite.openDatabaseAsync('myFinance2.db');
+export async function deleteSpend(id: number, db: SQLite.SQLiteDatabase) {
     try {
         await db.runAsync('DELETE FROM Spend WHERE id = ?', [id])
     } catch (error) {
@@ -250,11 +246,11 @@ export async function deleteSpend(id: number) {
 
 // Total
 export async function getYearData(
+    db: SQLite.SQLiteDatabase,
     selectedYear: number,
     setYearAndMonthData: React.Dispatch<React.SetStateAction<YearAndMonthData[]>>,
     setYearData: React.Dispatch<React.SetStateAction<YearDataResult | undefined>>
 ) {
-    const db = await SQLite.openDatabaseAsync('myFinance2.db');
     try {
 
         const yearIncomes = await db.getAllAsync<{ amount: number, month: string }>('SELECT amount,month FROM Income WHERE  year = ?', [selectedYear])

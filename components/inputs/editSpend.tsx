@@ -9,6 +9,7 @@ import { Spend } from '../../constants/interfaces';
 
 import { updateSpend } from "@/db/dbTools";
 import { Calculator } from "../calculator/Calculator";
+import { useSQLiteContext } from "expo-sqlite/next";
 
 
 export function EditSpend({
@@ -18,6 +19,7 @@ export function EditSpend({
     setShowEditInput: (showSpendInput: boolean) => void,
     editSpend: Spend,
 }) {
+    const db = useSQLiteContext();
     const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
     const { id, month, year, service, amount, type, description, createdAt } = editSpend;
 
@@ -71,7 +73,7 @@ export function EditSpend({
     };
 
     const handleSubmit = () => {
-        updateSpend({ data, setShowEditInput });
+        updateSpend({ db, data, setShowEditInput });
 
     };
 

@@ -12,6 +12,7 @@ import { useYearAndMonthContext } from "@/context/YearAndMonthProvider";
 import { getYearData, YearDataResult } from "@/db/dbTools";
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from "@react-navigation/native";
+import { useSQLiteContext } from "expo-sqlite/next";
 
 
 
@@ -43,7 +44,7 @@ type YearData = {
 };
 
 export default function HomeTotalCard() {
-
+    const db = useSQLiteContext();
     const [yearData, setYearData] = useState<YearDataResult>()
     const [yearAndMonthData, setYearAndMonthData] = useState<YearAndMonthData[]>([])
 
@@ -54,7 +55,7 @@ export default function HomeTotalCard() {
     //Cada vez que cambie la ruta hacer un fetch de los datos
     useFocusEffect(
         useCallback(() => {
-            getYearData(selectedYear, setYearAndMonthData, setYearData)
+            getYearData(db, selectedYear, setYearAndMonthData, setYearData)
         }, [selectedYear])
     );
 

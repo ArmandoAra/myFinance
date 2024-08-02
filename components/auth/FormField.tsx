@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, TextInput, useColorScheme } from 'react-native'
+import { Text, TextInput, useColorScheme } from 'react-native'
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';

@@ -1,21 +1,21 @@
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, Alert, Image } from 'react-native';
+import React, { useState } from 'react'
+import { StyleSheet, Alert, Image } from 'react-native';
 
 //Components
 import FormField from '@/components/auth/FormField';
 import CustomButton from '@/components/buttons/CustomButton';
-import { Link, router } from 'expo-router';
-import { createUser } from '@/lib/appwrite';
+import { router } from 'expo-router';
 
 import { useGlobalContext } from '@/context/GlobalProvider';
-import { insertUser } from '@/db/mf';
 import { inserUserByName } from '@/db/dbTools';
+import { useSQLiteContext } from 'expo-sqlite';
 
 const SignUp = () => {
-    const { setUser, setIsLogged, setLoading, user } = useGlobalContext();
+    const db = useSQLiteContext();
+    const { setUser, setIsLogged, setLoading } = useGlobalContext();
     const [form, setForm] = useState({
         userName: "",
     })
@@ -31,8 +31,8 @@ const SignUp = () => {
         }
         setIsSubmitting(true);
         try {
-            await inserUserByName(form.userName, setUser, setIsLogged, setLoading)
-                .then(() => router.push("/home"));
+            await inserUserByName(db, form.userName, setUser, setIsLogged, setLoading)
+            router.push("/home")
         } catch (error) {
             Alert.alert("Error creating user");
         } finally {

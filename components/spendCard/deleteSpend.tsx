@@ -4,10 +4,10 @@ import { ThemedText } from "../ThemedText";
 
 import { MaterialIcons } from '@expo/vector-icons';
 import { deleteSpend } from "@/db/dbTools";
-import { SQLiteDatabase } from "expo-sqlite";
 
 //Interfaces
 import { Spend } from '../../constants/interfaces'
+import { useSQLiteContext } from "expo-sqlite/next";
 
 export function DeleteSpend({
     id,
@@ -18,10 +18,10 @@ export function DeleteSpend({
     setSpends: React.Dispatch<React.SetStateAction<Spend[]>>,
     list: Spend[]
 }) {
-
+    const db = useSQLiteContext();
 
     const handleDelete = () => {
-        deleteSpend(id)
+        deleteSpend(id, db)
         const newList = list.filter((item) => item.id !== id)
         setSpends(newList)
     }

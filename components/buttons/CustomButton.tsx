@@ -5,8 +5,7 @@ import { Text } from "react-native";
 export default function CustomButton(
     { title,
         handlePress,
-        textStyles,
-        isLoading }:
+        textStyles }:
         {
             title: string,
             handlePress: () => void,

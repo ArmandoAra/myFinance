@@ -1,6 +1,6 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
-import { StyleSheet, Dimensions, Pressable, SafeAreaView } from 'react-native';
+import { StyleSheet, Pressable, SafeAreaView } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 
 //Context
@@ -24,12 +24,15 @@ import { Amount } from '@/components/spendCard/amount';
 
 //Interfaces
 import { Spend } from '@/constants/interfaces';
+import { useSQLiteContext } from 'expo-sqlite';
 
 
 
 function MonthScreen() {
 
+
     const { selectedYear, selectedMonth, } = useYearAndMonthContext();
+    const db = useSQLiteContext();
 
     const [amount, setAmount] = useState<number>(0);
     const [spends, setSpends] = useState<Spend[]>([]);
@@ -53,7 +56,7 @@ function MonthScreen() {
     //    Obterner el Income 
     useEffect(() => {
         //Obtener todos los Incomes del año seleccionado y si no existe crearlo
-        getMonthIncome({ amount, year: selectedYear, month: selectedMonth, setAmount });
+        getMonthIncome({ db, amount, year: selectedYear, month: selectedMonth, setAmount });
     }, [showIncomeInput])
 
     function handleEdit({ id, service, date, type, amount, description }: { id: number; service: string; date: Date; type: string; amount: number, description: string }) {
@@ -64,7 +67,7 @@ function MonthScreen() {
 
     // Obtener los gastos del mes
     useEffect(() => {
-        getMonthSpends(selectedYear, selectedMonth, setSpends);
+        getMonthSpends(db, selectedYear, selectedMonth, setSpends);
     }, [spends.length, showSpendInput, showEditInput])
 
 
