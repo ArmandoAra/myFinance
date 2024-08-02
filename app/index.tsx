@@ -55,6 +55,12 @@ export default function App() {
             .catch((error) => console.log(error));
     }, []);
 
+    // useEffect(() => {
+    //     db.withTransactionAsync(async () => {
+    //         getUser(setUser, setIsLogged)
+    //     });
+    // }, [user]);
+
 
 
     if (!dbLoaded) {
@@ -77,16 +83,12 @@ export default function App() {
             <ThemedView style={styles.container}>
                 <ThemedText type="title" style={styles.title}>My Finance</ThemedText>
                 <ThemedView style={styles.buttonContainer}>
-                    {!isLogged
-                        ? (<CustomButton
-                            title='New User'
-                            handlePress={() => router.push('/insertUser')}
-                            textStyles={buttonStyles.buttonIn}
-                        />)
-                        // Si esta logeado, se redirige a la pantalla de inicio
-                        : (<Redirect href="/home" />)
+                    <CustomButton
+                        title='New User'
+                        handlePress={() => router.push('/home')}
+                        textStyles={buttonStyles.buttonIn}
+                    />
 
-                    }
                 </ThemedView>
             </ThemedView>
 

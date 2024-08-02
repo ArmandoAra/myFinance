@@ -1,7 +1,7 @@
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, Alert, Image } from 'react-native';
 
 //Components
@@ -32,7 +32,7 @@ const SignUp = () => {
         setIsSubmitting(true);
         try {
             await inserUserByName(form.userName, setUser, setIsLogged, setLoading)
-                .then(() => router.replace("/home"));
+                .then(() => router.push("/home"));
         } catch (error) {
             Alert.alert("Error creating user");
         } finally {

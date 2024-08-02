@@ -1,13 +1,10 @@
-import { SQLiteDatabase } from "expo-sqlite"
 import * as SQLite from 'expo-sqlite';
 
 import { Spend } from "@/constants/interfaces";
 
 //Utils
 import { mergeAmountsAndSpends, sortByMonth, YearAndMonthData } from "@/utils/sortData";
-import { sum } from '../../mypf/src/components/utils/calculate';
 import { sumAmountsAndSpendAmounts, sumAmountsByMonth } from "@/utils/calculate";
-import { set } from 'date-fns';
 
 // Interface
 export interface User {
@@ -55,30 +52,20 @@ export async function inserUserByName(
     setIsLogged: React.Dispatch<React.SetStateAction<boolean>>,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>) {
     const db = await SQLite.openDatabaseAsync('myFinance2.db');
-    //Verificar si el usuario ya existe
     try {
         setLoading(true)
         const result = await db.getAllAsync<{ name: string }>(`SELECT name FROM User WHERE name = ?`, [name])
-            .then((result) => {
-                return result
-            });
+
         if (result.length === 0) {
             // Si no existe el usuario, entonces lo inserta
-            try {
-                const result = await db.runAsync('INSERT INTO User (name) VALUES (?)', [name])
-                    .then(() => setUser(name))
-                setIsLogged(true)
-                setLoading(false)
-
-            } catch (error) {
-                console.log('Error inserting user', error)
-                console.log(error)
-            }
+            await db.runAsync('INSERT INTO User (name) VALUES (?)', [name])
+            setUser(name)
+            setIsLogged(true)
         }
+        setLoading(false)
     }
     catch (error) {
         console.log('Error getting user', error)
-        console.log(error)
     }
 }
 
@@ -91,17 +78,12 @@ export async function getUser(
 
     try {
         const result = await db.getAllAsync<{ name: string }>(`SELECT name FROM User`)
-            .then((result) => {
-                console.log(result)
-                if (result.length === 0) {
-                    return setIsLogged(false)
-                } else {
-                    setIsLogged(true)
-                    return setUser(result[0].name)
-
-                }
-            });
-
+        if (result.length === 0) {
+            setIsLogged(false)
+        } else {
+            setIsLogged(true)
+            setUser(result[0].name)
+        }
     } catch (error) {
         console.log('Error getting user on GetUser')
 
@@ -114,7 +96,7 @@ export async function insertNewIncome({ amount, month, year, setAmount }: Update
     const db = await SQLite.openDatabaseAsync('myFinance2.db');
     try {
         await db.runAsync('INSERT INTO Income (amount, month, year) VALUES (?, ?, ?)', [amount, month, year])
-            .then(() => { setAmount(amount) })
+        setAmount(amount)
     } catch (error) {
         console.log('Error inserting income', error)
         console.log(error)
@@ -128,7 +110,7 @@ export async function updateIncome({ amount, month, year, setAmount }: UpdateInc
 
     try {
         await db.runAsync('UPDATE Income SET amount = ? WHERE month = ? AND year = ?', [amount, month, year])
-            .then(() => { setAmount(amount) })
+        setAmount(amount)
     } catch (error) {
         console.log('Error updating income', error)
         console.log(error)
@@ -142,18 +124,11 @@ export async function getMonthIncome({ amount, year, month, setAmount }: GetMont
     const db = await SQLite.openDatabaseAsync('myFinance2.db');
     try {
         const result = await db.getAllAsync<{ amount: number }>('SELECT amount FROM Income WHERE month = ? AND year = ?', [month, year])
-            .then((result) => {
-                return result
-            });
+
         if (result.length !== 0) {
             setAmount(result[0].amount)
         } else {
-            try {
-                await insertNewIncome({ amount, month, year, setAmount })
-            } catch (error) {
-                console.log("Error to insert the month income")
-                console.log(error)
-            }
+            await insertNewIncome({ amount, month, year, setAmount })
         }
     } catch (error) {
         console.log("getMonthIncome error", error)
@@ -165,9 +140,6 @@ export async function getYearIncome(year: number, setYearData: React.Dispatch<Re
     const db = await SQLite.openDatabaseAsync('myFinance2.db');
     try {
         const result = await db.getAllAsync<{ amount: number, month: string }>('SELECT amount,month FROM Income WHERE  year = ?', [year])
-            .then((result) => {
-                return result
-            });
         const sorted = sortByMonth(result)
         setYearData(sorted)
     } catch (error) {
@@ -186,10 +158,9 @@ export async function updateMonthIncome(
 
     try {
         await db.runAsync('UPDATE Income SET amount = ? WHERE month = ? AND year = ?', [income, month, year])
-            .then(() => { console.log('Income updated') })
+        console.log('Income updated')
     } catch (error) {
         console.log('Error updating income', error)
-        console.log(error)
     }
 
 }
@@ -200,7 +171,6 @@ export async function insertSpend(data: {
     data: Spend
 }) {
     const { service, amount, type, description, createdAt, month, year } = data.data;
-
     const db = await SQLite.openDatabaseAsync('myFinance2.db');
     const dateToInsert = createdAt.toISOString().split('T')[0];
     try {
@@ -219,24 +189,22 @@ export async function getMonthSpends(
     const db = await SQLite.openDatabaseAsync('myFinance2.db');
 
     try {
-        const result = await db.getAllAsync("SELECT * FROM Spend WHERE month = ? AND year = ?", [selectedMonth, selectedYear])
-            .then((result: any[]): Spend[] => {
-                return result.map(item => ({
-                    id: item.id,
-                    service: item.service,
-                    amount: item.amount,
-                    type: item.type,
-                    description: item.description,
-                    month: item.month,
-                    year: item.year,
-                    userId: item.userId,
-                    createdAt: new Date(item.createdAt)
-                }));
-            });
-        return setSpends(result)
+        const result = await db.getAllAsync<Spend>('SELECT * FROM Spend WHERE month = ? AND year = ?', [selectedMonth, selectedYear]);
+        const spends = result.map(item => ({
+            id: item.id,
+            service: item.service,
+            amount: item.amount,
+            type: item.type,
+            description: item.description,
+            month: item.month,
+            year: item.year,
+            createdAt: new Date(item.createdAt),
+        }));
+        setSpends(spends);
     } catch (error) {
-        console.log(error)
+        console.log('Error getting month spends', error);
     }
+
 }
 
 export async function getAllYearSpends(
@@ -247,10 +215,8 @@ export async function getAllYearSpends(
 
     try {
         const result = await db.getAllAsync<{ month: string, amount: number }>("SELECT month,amount FROM Spend WHERE  year = ?", [selectedYear])
-            .then((result) => {
-                return sumAmountsByMonth(result);
-            });
-        setMonthData(result)
+        const calculateSpend = sumAmountsByMonth(result);
+        setMonthData(calculateSpend)
     } catch (error) {
         console.log(error)
     }
@@ -262,12 +228,11 @@ export async function updateSpend({ data, setShowEditInput }: { data: Spend, set
     const db = await SQLite.openDatabaseAsync('myFinance2.db');
     const dateToInsert = createdAt.toISOString().split('T')[0];
     try {
-        await db.runAsync('UPDATE Spend SET service = ? WHERE id = ?', [service, id])
-        await db.runAsync('UPDATE Spend SET amount = ? WHERE id = ?', [amount, id])
-        await db.runAsync('UPDATE Spend SET type = ? WHERE id = ?', [type.length > 0 ? type : "?", id])
-        await db.runAsync('UPDATE Spend SET description = ? WHERE id = ?', [description, id])
-        await db.runAsync('UPDATE Spend SET createdAt = ? WHERE id = ?', [dateToInsert, id])
-            .then(() => { setShowEditInput(false) })
+        await db.runAsync(
+            'UPDATE Spend SET service = ?, amount = ?, type = ?, description = ?, createdAt = ? WHERE id = ?',
+            [service, amount, type, description, dateToInsert, id]
+        );
+        setShowEditInput(false)
     } catch (error) {
         console.log(error)
     }
@@ -277,12 +242,11 @@ export async function updateSpend({ data, setShowEditInput }: { data: Spend, set
 export async function deleteSpend(id: number) {
     const db = await SQLite.openDatabaseAsync('myFinance2.db');
     try {
-        await db.runAsync('DELETE FROM Spend WHERE id = $value', { $value: id })
+        await db.runAsync('DELETE FROM Spend WHERE id = ?', [id])
     } catch (error) {
         console.log(error)
     }
 }
-
 
 // Total
 export async function getYearData(
@@ -292,27 +256,19 @@ export async function getYearData(
 ) {
     const db = await SQLite.openDatabaseAsync('myFinance2.db');
     try {
-        try {
-            const yearIncomes = await db.getAllAsync<{ amount: number, month: string }>('SELECT amount,month FROM Income WHERE  year = ?', [selectedYear])
-                .then((yearIncomes) => {
-                    return yearIncomes
-                });
-            const sorted = sortByMonth(yearIncomes)
 
-            const spends = await db.getAllAsync<{ month: string, amount: number }>("SELECT month,amount FROM Spend WHERE  year = ?", [selectedYear])
-                .then((spends) => {
-                    return spends
-                });
-            const calculatedSpends = sumAmountsByMonth(spends);
+        const yearIncomes = await db.getAllAsync<{ amount: number, month: string }>('SELECT amount,month FROM Income WHERE  year = ?', [selectedYear])
+        const sorted = sortByMonth(yearIncomes)
 
-            const merged = mergeAmountsAndSpends(yearIncomes, calculatedSpends)
-            setYearAndMonthData(merged)
-            const yearData = sumAmountsAndSpendAmounts(merged)
-            setYearData(yearData)
+        const spends = await db.getAllAsync<{ month: string, amount: number }>("SELECT month,amount FROM Spend WHERE  year = ?", [selectedYear])
+        const calculatedSpends = sumAmountsByMonth(spends);
+        const merged = mergeAmountsAndSpends(yearIncomes, calculatedSpends)
+        const yearData = sumAmountsAndSpendAmounts(merged)
 
-        } catch (error) {
-            console.log("Error getting year data", error)
-        }
+        setYearAndMonthData(merged)
+        setYearData(yearData)
+
+
     } catch (error) {
         console.log("getYearData error", error)
     }

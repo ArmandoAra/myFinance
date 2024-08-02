@@ -86,9 +86,6 @@ const Home = () => {
             {/* Este componente debe recibir los datos que estan en el ejemplo en el componente que deben ser obtenidos de la db */}
             <HomeTotalCard />
 
-            {/* <ThemedView>
-                <ThemedText style={styles.listHeader}>Total Income {allIncomes}</ThemedText>
-            </ThemedView> */}
 
         </ThemedView>
     )

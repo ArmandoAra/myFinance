@@ -44,12 +44,6 @@ export const GlobalProvider: FC<GlobalProviderProps> = ({ children }) => {
     const [user, setUser] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(true);
 
-    useEffect(() => {
-        db.withTransactionAsync(async () => {
-            getUser(setUser, setIsLogged)
-        });
-    }, [user]);
-
 
 
     return (

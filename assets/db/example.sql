@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS Income (
 
 -- Insertar datos de prueba en la tabla User
 INSERT INTO User (email, name, password) VALUES ('john.doe@example.com', 'John Doe', 'password123');
+INSERT INTO User (name) VALUES ('User');
 
 INSERT INTO Year (year, userId) VALUES (2024, @userId);
 INSERT INTO Year (year, userId) VALUES (2025, @userId);
