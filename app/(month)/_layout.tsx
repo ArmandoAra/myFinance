@@ -41,7 +41,5 @@ export default function MonthLayout() {
 
     );
 }
-function useYearAndMonthContext(): { selectedYear: any; selectedMonth: any; } {
-    throw new Error('Function not implemented.');
-}
+
 

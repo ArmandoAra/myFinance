@@ -76,6 +76,7 @@ export default function HomeTotalCard() {
             <FlatList
                 style={{ width: "100%", height: "48%" }}
                 data={yearAndMonthData}
+                scrollEnabled={false}
                 renderItem={({ item }) => (
                     <ThemedView style={styles.row}>
                         <ThemedText style={{ fontSize: 18 }} >{item.month}</ThemedText>

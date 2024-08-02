@@ -1,22 +1,12 @@
-import { Link, router, Stack, Tabs } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import { Stack } from 'expo-router';
+import React, { } from 'react';
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 
 //icons
-import { FontAwesome } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
-import { MaterialIcons } from '@expo/vector-icons';
-import { FontAwesome5 } from '@expo/vector-icons';
-import { Pressable, StyleSheetProperties, StyleSheet, Button, ActivityIndicator } from 'react-native';
-import { getMonthByNumber } from '@/utils/getMonth';
-import { YearAndMonthProvider } from '@/context/YearAndMonthProvider';
+import { ActivityIndicator } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
-import CustomButton from '@/components/buttons/CustomButton';
 
-import { useGlobalContext } from '@/context/GlobalProvider';
+import { GlobalProvider, useGlobalContext } from '@/context/GlobalProvider';
 import { ThemedView } from '@/components/ThemedView';
 import { SQLiteProvider } from 'expo-sqlite/next';
 
@@ -40,16 +30,6 @@ const userIcon = ({ user, isLogged }: { user: string, isLogged: boolean }) => {
     return (<ThemedText>{user}</ThemedText>)
 }
 
-const logOutIcon = ({ isLogged }: { isLogged: boolean }) => {
-    //por el momento solo redirecciona
-    //comprobar si esta logueado, desloguear y redireccionar a pantalla root
-    return (
-        <Pressable style={{ marginRight: 20, }} onPress={() => router.push("/")}>
-            <MaterialIcons name="logout" size={24} color="white" />
-        </Pressable>
-    )
-
-}
 
 export default function HomeLayout() {
 
@@ -60,24 +40,25 @@ export default function HomeLayout() {
             <SQLiteProvider
                 databaseName='myFinance2.db'
             >
+                <GlobalProvider>
+                    <Stack>
+                        <Stack.Screen
+                            name="home"
+                            options={{
+                                headerTitle: () => userIcon({ user, isLogged }),
 
-                <Stack>
-                    <Stack.Screen
-                        name="home"
-                        options={{
-                            headerTitle: () => userIcon({ user, isLogged }),
+                                headerTintColor: '#fff',
+                                headerTitleStyle: {
+                                    fontWeight: 'bold',
+                                },
+                                headerTitleAlign: "center",
+                                headerShadowVisible: false,
+                                headerLeft: () => null,
+                            }}
 
-                            headerTintColor: '#fff',
-                            headerTitleStyle: {
-                                fontWeight: 'bold',
-                            },
-                            headerTitleAlign: "center",
-                            headerShadowVisible: false,
-                            headerLeft: () => null,
-                        }}
-
-                    />
-                </Stack>
+                        />
+                    </Stack>
+                </GlobalProvider>
             </SQLiteProvider>
         </React.Suspense>
     );

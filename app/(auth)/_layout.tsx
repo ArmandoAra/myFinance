@@ -10,7 +10,6 @@ import { Feather } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 
 export default function TabLayout() {
-    const colorScheme = useColorScheme();
 
     return (
         <Stack>
