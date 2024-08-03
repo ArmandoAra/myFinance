@@ -15,7 +15,10 @@ import { useYearAndMonthContext } from '@/context/YearAndMonthProvider';
 
 //Styles
 import { styles, pickerStyles } from './styles';
-import Picker from 'react-native-picker-select';
+import { Picker } from '@react-native-picker/picker';
+import { Dimensions } from 'react-native';
+
+const { height, width } = Dimensions.get('window');
 
 
 
@@ -40,45 +43,39 @@ const Home = () => {
                 <ThemedView style={styles.pickerContainer}>
                     {/* Select Year */}
                     <Picker
-                        placeholder={{ label: ` ${selectedYear}`, value: selectedYear }}
-                        value={selectedYear}
-                        onValueChange={(value) => setSelectedYear(value)}
+                        style={pickerStyles.inputAndroid}
+                        selectedValue={selectedYear}
+                        onValueChange={(value) => setSelectedYear(value)}>
+                        <Picker.Item label="2024" value={2024} />
+                        <Picker.Item label="2025" value={2025} />
+                        <Picker.Item label="2026" value={2026} />
+                        <Picker.Item label="2027" value={2027} />
+                        <Picker.Item label="2028" value={2028} />
+                        <Picker.Item label="2029" value={2029} />
+                        <Picker.Item label="2030" value={2030} />
+                    </Picker>
 
-                        items={[
-                            { label: '2024', value: 2024 },
-                            { label: '2025', value: 2025 },
-                            { label: '2026', value: 2026 },
-                            { label: '2027', value: 2027 },
-                            { label: '2028', value: 2028 },
-                            { label: '2029', value: 2029 },
-                            { label: '2030', value: 2030 },
-                        ]}
-                        style={pickerStyles}
-
-                    />
                 </ThemedView>
                 <ThemedView style={styles.pickerContainer}>
                     {/* Select Month */}
                     <Picker
-                        placeholder={{ label: ` ${selectedMonth}`, value: selectedMonth }}
-                        value={selectedMonth}
+                        style={pickerStyles.inputAndroid}
+                        selectedValue={selectedMonth}
                         onValueChange={(value) => setSelectedMonth(value)}
-                        items={[
-                            { label: "January", value: "January" },
-                            { label: "February", value: "February" },
-                            { label: "March", value: "March" },
-                            { label: "April", value: "April" },
-                            { label: "May", value: "May" },
-                            { label: "June", value: "June" },
-                            { label: "July", value: "July" },
-                            { label: "August", value: "August" },
-                            { label: "September", value: "September" },
-                            { label: "October", value: "October" },
-                            { label: "November", value: "November" },
-                            { label: "December", value: "December" },
-                        ]}
-                        style={pickerStyles}
-                    />
+                    >
+                        <Picker.Item label="January" value="January" />
+                        <Picker.Item label="February" value="February" />
+                        <Picker.Item label="March" value="March" />
+                        <Picker.Item label="April" value="April" />
+                        <Picker.Item label="May" value="May" />
+                        <Picker.Item label="June" value="June" />
+                        <Picker.Item label="July" value="July" />
+                        <Picker.Item label="August" value="August" />
+                        <Picker.Item label="September" value="September" />
+                        <Picker.Item label="October" value="October" />
+                        <Picker.Item label="November" value="November" />
+                        <Picker.Item label="December" value="December" />
+                    </Picker>
 
                 </ThemedView>
             </ThemedView>
