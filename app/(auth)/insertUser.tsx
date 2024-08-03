@@ -21,6 +21,11 @@ const SignUp = () => {
     })
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    //Funcion para crear la estructura de la base de datos
+    useEffect(() => {
+        createDatabaseStructure();
+    }, [])
+
 
 
     //Funcion para enviar los datos del formulario
@@ -33,7 +38,7 @@ const SignUp = () => {
         setIsSubmitting(true);
         try {
             await inserUserByName(form.userName, setUser, setIsLogged, setLoading)
-            router.push("/")
+            router.push("/home");
         } catch (error) {
             Alert.alert("Error creating user");
         } finally {

@@ -16,32 +16,12 @@ import { useSQLiteContext } from "expo-sqlite/next";
 
 
 
-
-const exampleData = {
-    year: 2024,
-    totalBruIncome: 1000,
-    totalNetIncome: 800,
-    totalSpend: 200,
-    totalUmst: 100,
-    total: 1000
-}
-
-
-interface MonthData {
-    spendAmount: number;
-    month: string;
-}
-
 export interface YearAndMonthData {
     month: string;
     amount: number;
     spendAmount: number;
 }
 
-type YearData = {
-    amounts: number;
-    spendAmounts: number;
-};
 
 export default function HomeTotalCard() {
     const db = useSQLiteContext();
@@ -63,7 +43,7 @@ export default function HomeTotalCard() {
 
         < ThemedView style={styles.container} >
             <ThemedView style={styles.textHeaderContainer}>
-                <ThemedText style={styles.textHeader} >Total of the {exampleData.year}</ThemedText>
+                <ThemedText style={styles.textHeader} >Total of the {selectedYear}</ThemedText>
             </ThemedView>
             <ThemedView style={{ ...styles.rowHeader }}>
                 <ThemedText style={{ fontSize: 24 }}>Month</ThemedText>
