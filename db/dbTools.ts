@@ -297,29 +297,6 @@ export async function getYearData(
 ) {
     try {
 
-        // await db.execAsync(`
-        //     CREATE TABLE IF NOT EXISTS Income (
-        //     id INTEGER PRIMARY KEY AUTOINCREMENT,
-        //     month TEXT,
-        //     userId INTEGER,
-        //     year INTEGER,
-        //     amount REAL,
-        //     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-        //     FOREIGN KEY (userId) REFERENCES User(id));
-
-        //     CREATE TABLE IF NOT EXISTS Spend (
-        //     id INTEGER PRIMARY KEY AUTOINCREMENT,
-        //     userId INTEGER,
-        //     month TEXT,
-        //     year INTEGER,
-        //     service TEXT,
-        //     amount REAL,
-        //     type TEXT,
-        //     description TEXT,
-        //     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-        //     FOREIGN KEY (userId) REFERENCES User(id));
-        //     `);
-
         const yearIncomes = await db.getAllAsync<{ amount: number, month: string }>('SELECT amount,month FROM Income WHERE  year = ?', [selectedYear])
         const sorted = sortByMonth(yearIncomes)
 

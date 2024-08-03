@@ -1,7 +1,7 @@
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, Alert, Image } from 'react-native';
 
 //Components
@@ -10,8 +10,9 @@ import CustomButton from '@/components/buttons/CustomButton';
 import { router } from 'expo-router';
 
 import { useGlobalContext } from '@/context/GlobalProvider';
-import { inserUserByName } from '@/db/dbTools';
+import { createDatabaseStructure, inserUserByName } from '@/db/dbTools';
 import { useSQLiteContext } from 'expo-sqlite';
+import use from 'react';
 
 const SignUp = () => {
     const { setUser, setIsLogged, setLoading } = useGlobalContext();
@@ -19,6 +20,7 @@ const SignUp = () => {
         userName: "",
     })
     const [isSubmitting, setIsSubmitting] = useState(false);
+
 
 
     //Funcion para enviar los datos del formulario
@@ -31,7 +33,7 @@ const SignUp = () => {
         setIsSubmitting(true);
         try {
             await inserUserByName(form.userName, setUser, setIsLogged, setLoading)
-            router.push("/home")
+            router.push("/")
         } catch (error) {
             Alert.alert("Error creating user");
         } finally {
@@ -54,7 +56,7 @@ const SignUp = () => {
                 <ThemedView style={{ marginTop: 20, gap: 10 }}>
                     <FormField
                         title="Name"
-                        value={form.userName}
+                        value=""
                         handleChangeText={(text: string) => setForm({ ...form, userName: text })}
                     />
                     <CustomButton

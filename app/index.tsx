@@ -35,10 +35,10 @@ export const loadDatabase = async () => {
 
     const dbInfo = await FileSystem.getInfoAsync(dbDir); // check if the db file exists
 
-    if (!dbInfo.exists || dbInfo.size < 20480) {
+    if (!dbInfo.exists || dbInfo.size === 20480) {
         await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'SQLite/', { intermediates: true });
         await FileSystem.downloadAsync(dbUri, dbDir); // download the db file
-        createDatabaseStructure()
+        createDatabaseStructure();
     }
 }
 
@@ -52,11 +52,11 @@ export default function App() {
         loadDatabase()
             .then(() => setDbLoaded(true))
             .catch((error) => console.log(error));
-    }, []);
+    }, [user]);
 
     useEffect(() => {
         getUser(setUser, setIsLogged)
-    }, []);
+    }, [user]);
 
 
     if (!dbLoaded) {
