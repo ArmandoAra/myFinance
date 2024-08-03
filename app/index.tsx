@@ -46,7 +46,6 @@ export const loadDatabase = async () => {
 export default function App() {
     const [dbLoaded, setDbLoaded] = useState<boolean>(false);
     const { isLogged, setUser, setIsLogged, user } = useGlobalContext();
-    const { selectedYear } = useYearAndMonthContext();
 
 
     useEffect(() => {
@@ -55,11 +54,9 @@ export default function App() {
             .catch((error) => console.log(error));
     }, []);
 
-    // useEffect(() => {
-    //     db.withTransactionAsync(async () => {
-    //         getUser(setUser, setIsLogged)
-    //     });
-    // }, [user]);
+    useEffect(() => {
+        getUser(setUser, setIsLogged)
+    }, []);
 
 
     if (!dbLoaded) {
@@ -83,10 +80,12 @@ export default function App() {
                 <ThemedText type="title" style={styles.title}>My Finance </ThemedText>
                 <ThemedText>{dbLoaded ?? "Base de datos cargada"}</ThemedText>
 
+                {isLogged && <Redirect href='/home' />}
+
                 <ThemedView style={styles.buttonContainer}>
                     <CustomButton
                         title='New User'
-                        handlePress={() => router.push('/home')}
+                        handlePress={() => router.push('/insertUser')}
                         textStyles={buttonStyles.buttonIn}
                     />
 

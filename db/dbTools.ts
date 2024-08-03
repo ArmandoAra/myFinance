@@ -5,8 +5,6 @@ import { Spend } from "@/constants/interfaces";
 //Utils
 import { mergeAmountsAndSpends, sortByMonth, YearAndMonthData } from "@/utils/sortData";
 import { sumAmountsAndSpendAmounts, sumAmountsByMonth } from "@/utils/calculate";
-import { codesByCategories } from '../../../myWeb/it-tools/it-tools/src/tools/http-status-codes/http-status-codes.constants';
-import { type } from '../../../myWeb/it-tools/it-tools/src/tools/meta-tag-generator/OGSchemaType.type';
 
 // Interface
 export interface User {
@@ -51,8 +49,11 @@ export interface MonthData {
 
 //Funcion para crear la estructura de la base de datos
 export async function createDatabaseStructure() {
-    const db = await SQLite.openDatabaseAsync('myFinance.db');
-    await db.execAsync(`
+    const db = await SQLite.openDatabaseAsync('myFinance.db', {
+        useNewConnection: true,
+    });
+    try {
+        await db.execAsync(`
         PRAGMA journal_mode = WAL;
         PRAGMA foreign_keys = ON;
 
@@ -61,23 +62,6 @@ export async function createDatabaseStructure() {
         name TEXT,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
         updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP);
-
-        CREATE TABLE IF NOT EXISTS Year (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        year INTEGER,
-        userId INTEGER,
-        FOREIGN KEY (userId) REFERENCES User(id)
-        );
-
-        CREATE TABLE IF NOT EXISTS Month (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        userId INTEGER,
-        yearId INTEGER,
-        month TEXT,
-        brutIncome REAL,
-        FOREIGN KEY (userId) REFERENCES User(id),
-        FOREIGN KEY (yearId) REFERENCES Year(id)
-        );
 
         CREATE TABLE IF NOT EXISTS Income (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -99,18 +83,22 @@ export async function createDatabaseStructure() {
         description TEXT,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (userId) REFERENCES User(id));
-
         `);
+    }
+    catch (error) {
+        console.log('Error creating database structure', error)
+    }
 }
 
 // User
 // Insert User
 export async function inserUserByName(
-    db: SQLite.SQLiteDatabase,
     name: string,
     setUser: React.Dispatch<React.SetStateAction<string>>,
     setIsLogged: React.Dispatch<React.SetStateAction<boolean>>,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>) {
+    const db = await SQLite.openDatabaseAsync('myFinance.db');
+
     try {
         setLoading(true)
         const result = await db.getAllAsync<{ name: string }>(`SELECT name FROM User WHERE name = ?`, [name])
@@ -126,15 +114,15 @@ export async function inserUserByName(
     catch (error) {
         console.log('Error getting user', error)
     }
+    db.closeAsync()
 }
 
 
 export async function getUser(
-    db: SQLite.SQLiteDatabase,
     setUser: React.Dispatch<React.SetStateAction<string>>,
     setIsLogged: React.Dispatch<React.SetStateAction<boolean>>
 ) {
-
+    const db = await SQLite.openDatabaseAsync('myFinance.db');
     try {
         const result = await db.getAllAsync<{ name: string }>(`SELECT name FROM User`)
         if (result.length === 0) {
@@ -145,7 +133,6 @@ export async function getUser(
         }
     } catch (error) {
         console.log('Error getting user on GetUser')
-
     }
 }
 
@@ -309,6 +296,29 @@ export async function getYearData(
     setYearData: React.Dispatch<React.SetStateAction<YearDataResult | undefined>>
 ) {
     try {
+
+        // await db.execAsync(`
+        //     CREATE TABLE IF NOT EXISTS Income (
+        //     id INTEGER PRIMARY KEY AUTOINCREMENT,
+        //     month TEXT,
+        //     userId INTEGER,
+        //     year INTEGER,
+        //     amount REAL,
+        //     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+        //     FOREIGN KEY (userId) REFERENCES User(id));
+
+        //     CREATE TABLE IF NOT EXISTS Spend (
+        //     id INTEGER PRIMARY KEY AUTOINCREMENT,
+        //     userId INTEGER,
+        //     month TEXT,
+        //     year INTEGER,
+        //     service TEXT,
+        //     amount REAL,
+        //     type TEXT,
+        //     description TEXT,
+        //     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+        //     FOREIGN KEY (userId) REFERENCES User(id));
+        //     `);
 
         const yearIncomes = await db.getAllAsync<{ amount: number, month: string }>('SELECT amount,month FROM Income WHERE  year = ?', [selectedYear])
         const sorted = sortByMonth(yearIncomes)

@@ -38,10 +38,9 @@ interface GlobalProviderProps {
 
 export const GlobalProvider: FC<GlobalProviderProps> = ({ children }) => {
 
-    const [isLogged, setIsLogged] = useState<boolean>(true);
-    const [user, setUser] = useState<string>("Armando");
+    const [isLogged, setIsLogged] = useState<boolean>(false);
+    const [user, setUser] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(true);
-
 
 
     return (

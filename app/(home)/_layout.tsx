@@ -32,6 +32,7 @@ const userIcon = ({ user, isLogged }: { user: string, isLogged: boolean }) => {
 
 
 export default function HomeLayout() {
+    const { user, isLogged } = useGlobalContext();
 
 
     return (
@@ -44,7 +45,7 @@ export default function HomeLayout() {
                         <Stack.Screen
                             name="home"
                             options={{
-                                // headerTitle: () => userIcon({ user, isLogged }),
+                                headerTitle: () => userIcon({ user, isLogged }),
 
                                 headerTintColor: '#fff',
                                 headerTitleStyle: {

@@ -14,7 +14,6 @@ import { inserUserByName } from '@/db/dbTools';
 import { useSQLiteContext } from 'expo-sqlite';
 
 const SignUp = () => {
-    const db = useSQLiteContext();
     const { setUser, setIsLogged, setLoading } = useGlobalContext();
     const [form, setForm] = useState({
         userName: "",
@@ -31,7 +30,7 @@ const SignUp = () => {
         }
         setIsSubmitting(true);
         try {
-            await inserUserByName(db, form.userName, setUser, setIsLogged, setLoading)
+            await inserUserByName(form.userName, setUser, setIsLogged, setLoading)
             router.push("/home")
         } catch (error) {
             Alert.alert("Error creating user");
