@@ -56,7 +56,7 @@ const SignUp = () => {
                 <ThemedView style={{ marginTop: 20, gap: 10 }}>
                     <FormField
                         title="Name"
-                        value=""
+                        value={form.userName}
                         handleChangeText={(text: string) => setForm({ ...form, userName: text })}
                     />
                     <CustomButton
