@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router';
-import React, { } from 'react';
+import React, { useEffect } from 'react';
 
 
 //icons
@@ -33,19 +33,18 @@ const userIcon = ({ user, isLogged }: { user: string, isLogged: boolean }) => {
 
 export default function HomeLayout() {
 
-    const { isLogged, user } = useGlobalContext();
 
     return (
         <React.Suspense fallback={<ActivityIndicator size='large' color='blue' />}>
             <SQLiteProvider
-                databaseName='myFinance2.db'
+                databaseName='myFinance.db'
             >
                 <GlobalProvider>
                     <Stack>
                         <Stack.Screen
                             name="home"
                             options={{
-                                headerTitle: () => userIcon({ user, isLogged }),
+                                // headerTitle: () => userIcon({ user, isLogged }),
 
                                 headerTintColor: '#fff',
                                 headerTitleStyle: {

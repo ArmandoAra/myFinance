@@ -17,7 +17,7 @@ import * as FileSystem from 'expo-file-system';
 import { Asset } from 'expo-asset';
 import { useYearAndMonthContext, YearAndMonthProvider } from '@/context/YearAndMonthProvider';
 import React from 'react';
-import { getUser } from '@/db/dbTools';
+import { createDatabaseStructure, getUser } from '@/db/dbTools';
 
 
 
@@ -28,18 +28,19 @@ import { getUser } from '@/db/dbTools';
 
 //Funcion de ayruda para cargar la base de datos que podemos mover a otro archivo
 export const loadDatabase = async () => {
-    const dbName = 'myFinance2.db';
-    const dbAsset = require('../assets/db/myFinance2.db');// db file in assets folder
+    const dbName = 'myFinance.db';
+    const dbAsset = require('@/assets/db/myFinance.db');// db file in assets folder
     const dbUri = Asset.fromModule(dbAsset).uri; // get the uri of the db file
     const dbDir = FileSystem.documentDirectory + 'SQLite/' + dbName; // directory to store the db file
 
     const dbInfo = await FileSystem.getInfoAsync(dbDir); // check if the db file exists
-    if (!dbInfo.exists) {
+
+    if (!dbInfo.exists || dbInfo.size < 20480) {
         await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'SQLite/', { intermediates: true });
         await FileSystem.downloadAsync(dbUri, dbDir); // download the db file
+        createDatabaseStructure()
     }
 }
-
 
 
 export default function App() {
@@ -47,7 +48,6 @@ export default function App() {
     const { isLogged, setUser, setIsLogged, user } = useGlobalContext();
     const { selectedYear } = useYearAndMonthContext();
 
-    const db = useSQLiteContext();
 
     useEffect(() => {
         loadDatabase()
@@ -60,7 +60,6 @@ export default function App() {
     //         getUser(setUser, setIsLogged)
     //     });
     // }, [user]);
-
 
 
     if (!dbLoaded) {
@@ -81,7 +80,9 @@ export default function App() {
                 resizeMode='cover'
             ></Image>
             <ThemedView style={styles.container}>
-                <ThemedText type="title" style={styles.title}>My Finance</ThemedText>
+                <ThemedText type="title" style={styles.title}>My Finance </ThemedText>
+                <ThemedText>{dbLoaded ?? "Base de datos cargada"}</ThemedText>
+
                 <ThemedView style={styles.buttonContainer}>
                     <CustomButton
                         title='New User'

@@ -5,6 +5,8 @@ import { Spend } from "@/constants/interfaces";
 //Utils
 import { mergeAmountsAndSpends, sortByMonth, YearAndMonthData } from "@/utils/sortData";
 import { sumAmountsAndSpendAmounts, sumAmountsByMonth } from "@/utils/calculate";
+import { codesByCategories } from '../../../myWeb/it-tools/it-tools/src/tools/http-status-codes/http-status-codes.constants';
+import { type } from '../../../myWeb/it-tools/it-tools/src/tools/meta-tag-generator/OGSchemaType.type';
 
 // Interface
 export interface User {
@@ -44,6 +46,61 @@ export interface YearSpends {
 export interface MonthData {
     month: string;
     spendAmount: number;
+}
+
+
+//Funcion para crear la estructura de la base de datos
+export async function createDatabaseStructure() {
+    const db = await SQLite.openDatabaseAsync('myFinance.db');
+    await db.execAsync(`
+        PRAGMA journal_mode = WAL;
+        PRAGMA foreign_keys = ON;
+
+        CREATE TABLE IF NOT EXISTS User (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP);
+
+        CREATE TABLE IF NOT EXISTS Year (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        year INTEGER,
+        userId INTEGER,
+        FOREIGN KEY (userId) REFERENCES User(id)
+        );
+
+        CREATE TABLE IF NOT EXISTS Month (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        userId INTEGER,
+        yearId INTEGER,
+        month TEXT,
+        brutIncome REAL,
+        FOREIGN KEY (userId) REFERENCES User(id),
+        FOREIGN KEY (yearId) REFERENCES Year(id)
+        );
+
+        CREATE TABLE IF NOT EXISTS Income (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        month TEXT,
+        userId INTEGER,
+        year INTEGER,
+        amount REAL,
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (userId) REFERENCES User(id));
+
+        CREATE TABLE IF NOT EXISTS Spend (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        userId INTEGER,
+        month TEXT,
+        year INTEGER,
+        service TEXT,
+        amount REAL,
+        type TEXT,
+        description TEXT,
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (userId) REFERENCES User(id));
+
+        `);
 }
 
 // User
@@ -263,6 +320,7 @@ export async function getYearData(
 
         setYearAndMonthData(merged)
         setYearData(yearData)
+
 
 
     } catch (error) {

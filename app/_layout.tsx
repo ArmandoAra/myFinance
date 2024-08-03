@@ -1,5 +1,5 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { router, SplashScreen, Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import 'react-native-reanimated';
 
 
@@ -9,9 +9,8 @@ import { YearAndMonthProvider } from '@/context/YearAndMonthProvider';
 
 import { MaterialIcons } from '@expo/vector-icons';
 import { ActivityIndicator, Pressable } from 'react-native';
-import { SQLiteProvider } from 'expo-sqlite/next';
-import React, { useEffect } from 'react';
-import { useFonts } from 'expo-font';
+import { SQLiteProvider, useSQLiteContext, type SQLiteDatabase } from 'expo-sqlite';
+import React from 'react';
 
 const goHomeIcon = () => {
     return (
@@ -30,7 +29,7 @@ export default function RootLayout() {
             <React.Suspense fallback={<ActivityIndicator size='large' color='blue' />}>
                 <YearAndMonthProvider>
                     <SQLiteProvider
-                        databaseName='myFinance2.db'
+                        databaseName='myFinance.db'
                     >
                         <GlobalProvider>
                             <Stack>

@@ -24,7 +24,7 @@ export default function MonthLayout() {
     return (
         <React.Suspense fallback={<ActivityIndicator size='large' color='blue' />}>
             <SQLiteProvider
-                databaseName='myFinance2.db'
+                databaseName='myFinance.db'
             >
                 <Tabs
                     screenOptions={{

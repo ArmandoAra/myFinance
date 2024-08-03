@@ -1,5 +1,5 @@
 import { AntDesign } from "@expo/vector-icons";
-import RNDateTimePicker from "@react-native-community/datetimepicker";
+
 import React, { useState } from "react";
 import { TextInput, Pressable, StyleSheet } from "react-native";
 import { ThemedText } from "../ThemedText";
@@ -11,6 +11,7 @@ import { insertSpend } from "@/db/dbTools";
 import { Calculator } from "../calculator/Calculator";
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { useSQLiteContext } from "expo-sqlite/next";
+import RNDateTimePicker from "@react-native-community/datetimepicker";
 
 
 export function SpendInput({

@@ -1,7 +1,6 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import { StyleSheet, Pressable, SafeAreaView } from 'react-native';
-import RNPickerSelect from 'react-native-picker-select';
 
 //Context
 import { useYearAndMonthContext } from '@/context/YearAndMonthProvider';
@@ -25,6 +24,7 @@ import { Amount } from '@/components/spendCard/amount';
 //Interfaces
 import { Spend } from '@/constants/interfaces';
 import { useSQLiteContext } from 'expo-sqlite';
+import Picker from 'react-native-picker-select';
 
 
 
@@ -136,7 +136,7 @@ function MonthScreen() {
                         style={styles.pickerContainer}
                     >
                         {/* Select Month */}
-                        <RNPickerSelect
+                        <Picker
                             placeholder={{
                                 label: ` ${selectedType}`,
                                 value: selectedType,

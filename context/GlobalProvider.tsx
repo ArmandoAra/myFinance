@@ -38,10 +38,8 @@ interface GlobalProviderProps {
 
 export const GlobalProvider: FC<GlobalProviderProps> = ({ children }) => {
 
-    const db = useSQLiteContext();
-
-    const [isLogged, setIsLogged] = useState<boolean>(false);
-    const [user, setUser] = useState<string>("");
+    const [isLogged, setIsLogged] = useState<boolean>(true);
+    const [user, setUser] = useState<string>("Armando");
     const [loading, setLoading] = useState<boolean>(true);
 
 
