@@ -12,7 +12,7 @@ import { EditSpend } from './editSpend';
 //Interfaces
 import { Spend } from "@/constants/interfaces";
 
-const { height, width } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 import { LinearGradient } from 'expo-linear-gradient';
 
 
@@ -28,33 +28,21 @@ export function SpendList({
 
     return (
         <LinearGradient
-            colors={['rgba(0,0,0,0.8)', 'transparent']}
+            colors={['rgba(0,0,0,0.3)', 'transparent']}
             style={styles.gradient}
         >
             <LinearGradient colors={['#028283', 'transparent']} style={styles.shadowTop} ></LinearGradient>
 
             <FlatList
-                style={{
-                    width: "100%", height: height * 0.55, marginTop: 10
-
-                }}
+                style={styles.flatlist}
                 data={list}
                 renderItem={({ item }) => (
                     <Card>
-                        <ThemedView style={{
-                            flexDirection: "row",
-                            width: "100%",
-                            borderRadius: 15,
-                            gap: 5,
-                            overflow: "hidden",
-
-                        }}>
+                        <ThemedView style={styles.infoContainer}>
                             <SpendInfo
-                                amount={item.amount}
                                 service={item.service}
                                 date={item.createdAt}
                                 type={item.type}
-                                id={item.id}
                                 description={item.description}
                             />
 
@@ -83,6 +71,19 @@ export function SpendList({
 }
 
 const styles = StyleSheet.create({
+    flatlist: {
+        width: "100%",
+        height: height * 0.55,
+        marginTop: 10
+    },
+    infoContainer: {
+        flexDirection: "row",
+        width: "100%",
+        borderRadius: 15,
+        justifyContent: "space-between",
+        overflow: "hidden",
+
+    },
     gradient: {
         position: 'relative',
         left: 0,

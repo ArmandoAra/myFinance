@@ -1,9 +1,11 @@
 
 import React, { useEffect, useMemo, useState } from 'react'
 import { StyleSheet, Pressable, SafeAreaView } from 'react-native';
+import Picker from 'react-native-picker-select';
 
 //Context
 import { useYearAndMonthContext } from '@/context/YearAndMonthProvider';
+import { useSQLiteContext } from 'expo-sqlite';
 
 //Style
 import { styles } from './styles';
@@ -23,8 +25,8 @@ import { Amount } from '@/components/spendCard/amount';
 
 //Interfaces
 import { Spend } from '@/constants/interfaces';
-import { useSQLiteContext } from 'expo-sqlite';
-import Picker from 'react-native-picker-select';
+
+
 
 
 
@@ -70,11 +72,8 @@ function MonthScreen() {
         getMonthSpends(db, selectedYear, selectedMonth, setSpends);
     }, [spends.length, showSpendInput, showEditInput])
 
-
-
-    //SelectType
+    //SelectType Filter
     const [selectedType, setSelectedType] = useState<string>('All Spends');
-
 
     useEffect(() => {
         if (selectedType === 'All Spends') {
@@ -100,8 +99,8 @@ function MonthScreen() {
 
     return (
 
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#383838' }} >
-            <ThemedView>
+        <SafeAreaView  >
+            <ThemedView style={styles.container}>
                 <ThemedView style={styles.headerContainer}>
                     <ThemedText style={styles.listHeader}>Expences from {selectedMonth}</ThemedText>
                 </ThemedView>
@@ -154,7 +153,6 @@ function MonthScreen() {
                     <SpendList
                         list={spends.filter(spend => selectedType === 'All Spends' ? spend : spend.type === selectedType)}
                         setSpends={setSpends}
-                        showAmountInfo={true}
                         handleEdit={handleEdit}
                     />
                     {showSpendInput &&
@@ -173,11 +171,10 @@ function MonthScreen() {
                     {/*@@@@@@@@@@@@@@ Total Spends Amount @@@@@@@@@@@@@@@@@*/}
                     <ThemedView style={{
                         display: 'flex',
-                        justifyContent: 'center',
+                        justifyContent: 'space-evenly',
                         flexDirection: 'row',
                         backgroundColor: '#31363F',
                         width: '95%',
-                        height: 50,
                         borderRadius: 15,
                         margin: 10
                     }}>
@@ -188,8 +185,9 @@ function MonthScreen() {
                             textAlignVertical: "center",
                             borderRadius: 10,
                             width: "40%"
-                        }}>Total Spends: </ThemedText>
+                        }}>Total: </ThemedText>
                         <Amount amount={calcSpendsByType({ spends, selectedType })} />
+                        <ThemedText style={styles.textAmount}>{amount - calcSpendsByType({ spends, selectedType: 'All Spends' })}</ThemedText>
                     </ThemedView>
 
                     {/* Add Button */}
@@ -198,22 +196,21 @@ function MonthScreen() {
                         style={{
                             borderRadius: 50,
                             display: "flex",
-                            width: 80,
-                            height: 80,
+                            width: 70,
+                            height: 70,
                             justifyContent: "center",
                             alignItems: "center",
                             alignSelf: "center",
-                            margin: 10,
                             backgroundColor: "#219C90",
-                            marginBottom: 25,
+
                         }}>
                         <FontAwesome name="plus" size={24} color="white" />
                     </Pressable>
 
                 </ThemedView>
+
             </ThemedView>
         </SafeAreaView>
-
 
     )
 }

@@ -27,3 +27,9 @@ export interface ResUser {
     status: boolean;
     targets: Target[];
 };
+
+export interface YearAndMonthData {
+    month: string;
+    amount: number;
+    spendAmount: number;
+}

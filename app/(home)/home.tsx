@@ -1,25 +1,23 @@
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import React, { useEffect } from 'react'
+import React from 'react'
+import { router } from 'expo-router';
+import { Picker } from '@react-native-picker/picker';
 
 
 
 //Components
+import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
 import CustomButton from '@/components/buttons/CustomButton';
 import HomeTotalCard from '@/components/cards/homeTotalCard';
-import { router } from 'expo-router';
 
+
+//Context
 import { useYearAndMonthContext } from '@/context/YearAndMonthProvider';
 
 
 
 //Styles
 import { styles, pickerStyles } from './styles';
-import { Picker } from '@react-native-picker/picker';
-import { Dimensions } from 'react-native';
-
-const { height, width } = Dimensions.get('window');
-
 
 
 const Home = () => {
@@ -79,10 +77,9 @@ const Home = () => {
 
                 </ThemedView>
             </ThemedView>
+
             <CustomButton title="Go to" handlePress={() => router.push("/monthScreen")} textStyles={styles.buttonGoTo} />
 
-
-            {/* Este componente debe recibir los datos que estan en el ejemplo en el componente que deben ser obtenidos de la db */}
             <HomeTotalCard />
 
 

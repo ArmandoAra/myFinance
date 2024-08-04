@@ -48,9 +48,8 @@ const SignUp = () => {
     }
 
     return (
-        <ParallaxScrollView
-            headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-        >
+
+        <ThemedView style={{ flex: 1 }}>
             <Image source={require('@/assets/images/topImage.jpg')}
                 style={styles.headerImage}
                 resizeMode='cover'
@@ -71,7 +70,8 @@ const SignUp = () => {
                     />
                 </ThemedView>
             </ThemedView>
-        </ParallaxScrollView>
+        </ThemedView>
+
     )
 }
 
@@ -79,11 +79,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         width: '100%',
-        height: '100%',
         alignItems: 'center',
         gap: 8,
         paddingTop: 20,
-        paddingBottom: 420,
+        height: '100%',
     },
     buttonUp: {
         fontSize: 20,

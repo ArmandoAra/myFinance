@@ -3,17 +3,13 @@ import { StyleSheet, Pressable } from 'react-native';
 import { ThemedText } from '../ThemedText';
 import { ThemedView } from '../ThemedView';
 
-import { FontAwesome5, Ionicons } from '@expo/vector-icons';
-import { z } from 'zod';
-import { HelloWave } from '../../../lsd/components/HelloWave';
+import { Ionicons } from '@expo/vector-icons';
 import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
 
-export function SpendInfo({ id, service, date, type, amount, description, }: {
-    id: number;
+export function SpendInfo({ service, date, type, description, }: {
     service: string;
     date: Date;
     type: string;
-    amount: number;
     description: string;
 }) {
 
@@ -21,7 +17,7 @@ export function SpendInfo({ id, service, date, type, amount, description, }: {
     const [showDescription, setShowDescription] = React.useState(false);
 
     return (<ThemedView style={styles.container}>
-        <ThemedView style={{ width: "100%", flexDirection: "row", overflow: "hidden", borderRadius: 15 }}>
+        <ThemedView style={styles.typeContainer}>
             <ThemedView style={styles.typeTextContainer}>
                 <AutoSizeText
                     fontSize={12}
@@ -39,14 +35,14 @@ export function SpendInfo({ id, service, date, type, amount, description, }: {
 
             {description.length > 0 &&
                 <Pressable
-                    style={{ width: 50, height: 50, backgroundColor: "transparent", borderRadius: 15, justifyContent: "center", alignItems: "center", overflow: "hidden", position: "absolute", right: 0 }}
+                    style={styles.showDescription}
                     onPress={() => setShowDescription(!showDescription)}
                 >
                     <Ionicons name="information-circle-outline" size={24} color="white" />
                 </Pressable>}
         </ThemedView>
         {showDescription &&
-            <ThemedView style={{ width: "100%", borderRadius: 7, overflow: "hidden", margin: 5, backgroundColor: "#45474B" }}>
+            <ThemedView style={styles.descriptionContainer}>
                 <ThemedText style={styles.description}>{description}</ThemedText>
             </ThemedView>
         }
@@ -73,6 +69,12 @@ const styles = StyleSheet.create({
         width: '70%',
         borderRadius: 10,
         position: 'relative',
+    },
+    typeContainer: {
+        width: "100%",
+        flexDirection: "row",
+        overflow: "hidden",
+        borderRadius: 15
     },
     typeTextContainer: {
         backgroundColor: "#45474B",
@@ -126,6 +128,23 @@ const styles = StyleSheet.create({
         borderBottomStartRadius: 15,
         borderBottomLeftRadius: 15,
         textAlign: 'center',
+    },
+    showDescription: {
+        width: 50,
+        height: 50,
+        backgroundColor: "transparent",
+        borderRadius: 15, justifyContent: "center",
+        alignItems: "center",
+        overflow: "hidden",
+        position: "absolute",
+        right: 0
+    },
+    descriptionContainer: {
+        width: "100%",
+        borderRadius: 7,
+        overflow: "hidden",
+        margin: 5,
+        backgroundColor: "#45474B"
     },
     description: {
         width: "100%",

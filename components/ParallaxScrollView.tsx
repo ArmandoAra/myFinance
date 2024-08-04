@@ -18,43 +18,17 @@ type Props = PropsWithChildren<{
 
 export default function ParallaxScrollView({
   children,
-  headerBackgroundColor,
 }: Props) {
-  const colorScheme = useColorScheme() ?? 'light';
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
-  const scrollOffset = useScrollViewOffset(scrollRef);
 
 
   return (
-    <SafeAreaView >
-      <Animated.ScrollView ref={scrollRef} scrollEventThrottle={16} >
-        {children}
-      </Animated.ScrollView>
-    </SafeAreaView>
+
+    <Animated.ScrollView ref={scrollRef} scrollEventThrottle={16} >
+      {children}
+    </Animated.ScrollView>
+
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    height: '100%',
-  },
-  header: {
-    height: 150,
-    overflow: 'hidden',
-  },
-  content: {
-    flex: 1,
-    padding: 32,
-    gap: 16,
-    overflow: 'hidden',
-  },
-  headerImage: {
-    width: '100%',
-    height: HEADER_HEIGHT,
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: -1,
-  },
-});
+

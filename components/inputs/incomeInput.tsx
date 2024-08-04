@@ -8,6 +8,8 @@ import { AntDesign } from '@expo/vector-icons';
 import { updateIncome } from "@/db/dbTools";
 import { useSQLiteContext } from "expo-sqlite/next";
 
+import { StyleSheet } from "react-native";
+
 
 export function IncomeInput({
     showIncomeInput,
@@ -98,3 +100,8 @@ export function IncomeInput({
 
     )
 }
+
+
+const styles = StyleSheet.create({
+
+})

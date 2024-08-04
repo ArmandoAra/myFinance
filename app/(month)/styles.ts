@@ -4,6 +4,10 @@ const { height } = Dimensions.get('window');
 
 
 export const styles = StyleSheet.create({
+    container: {
+        flexDirection: 'column',
+        width: "100%",
+    },
     headerContainer: {
         width: '100%',
         alignItems: 'center',
@@ -54,5 +58,10 @@ export const styles = StyleSheet.create({
         margin: 10,
         overflow: 'hidden',
         marginBottom: 20,
-    }
+    },
+    textAmount: {
+        fontSize: 18,
+        color: '#A6F576',
+        textAlignVertical: "center",
+    },
 })

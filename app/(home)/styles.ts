@@ -1,23 +1,32 @@
 import { Dimensions, StyleSheet } from 'react-native';
+import { rowColorLighter } from '../../constants/Colors';
 
-const { height, width } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 
 //Home Styles
 export const styles = StyleSheet.create({
     container: {
         flexDirection: 'column',
-        flex: 1, width: "100%",
+        flex: 1,
+        width: "100%",
+        height: "100%",
         alignItems: 'center',
-        height,
         gap: 4,
+        overflow: 'scroll',
     },
     headerContainer: {
         width: '100%',
-        height: 100,
+        backgroundColor: '#219C90',
         alignItems: 'center',
+        justifyContent: 'center',
     },
-    pickerMainContainer: { flexDirection: "row", gap: 10 },
+    pickerMainContainer: {
+        flexDirection: "row",
+        width: '100%',
+        justifyContent: 'center',
+        gap: 10
+    },
     pickerContainer: {
         flexDirection: "row",
         position: 'relative',
@@ -42,9 +51,6 @@ export const styles = StyleSheet.create({
         textAlignVertical: 'center',
         textAlign: 'center',
         paddingTop: 20,
-        backgroundColor: '#219C90',
-        width: "100%",
-        height: 100,
     },
     buttonGoTo: {
         fontSize: 20,
@@ -54,11 +60,9 @@ export const styles = StyleSheet.create({
         borderRadius: 10,
         display: "flex",
         paddingVertical: 10,
-        marginVertical: 10,
+        marginVertical: 5,
         marginBottom: 30,
         justifyContent: 'center',
-
-
     },
     iconContainer: {
         top: 10,
