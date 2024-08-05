@@ -18,7 +18,7 @@ export function Amount({ amount }: { amount: number }) {
                 numberOfLines={1}
                 style={styles.amount}
             >
-                ${amount}
+                {amount}
             </AutoSizeText>
         </ThemedView>
     );
@@ -34,12 +34,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#31363F',
         width: 70,
         height: 50,
+        marginTop: 5,
         borderRadius: 10,
     },
     amount: {
         color: "#F05941",
         backgroundColor: "#31363F",
-        height: 40,
+        height: "auto",
         textAlignVertical: "center",
         fontSize: 20,
         textAlign: "center"

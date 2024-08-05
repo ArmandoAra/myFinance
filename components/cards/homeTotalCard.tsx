@@ -48,11 +48,12 @@ export default function HomeTotalCard() {
 
             <FlatList
                 data={yearAndMonthData}
-                scrollEnabled={false}
+                scrollEnabled={true}
                 renderItem={({ item }) => (
                     <CardList rowText={item.month} spend={item.spendAmount} amount={item.amount} />
                 )}
                 keyExtractor={(item) => (item.month).toString()}
+                style={{ backgroundColor: '#31363F' }}
             />
 
             <CardHeader textHeader="Total" />
