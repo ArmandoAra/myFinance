@@ -11,12 +11,12 @@ export const styles = StyleSheet.create({
     headerContainer: {
         width: '100%',
         alignItems: 'center',
-        marginTop: 7,
+        marginTop: 1,
     },
     listHeader: {
         paddingTop: 20,
         height: 50,
-        fontSize: 34,
+        fontSize: 25,
         color: '#BBE9FF',
     },
     incomeContainer: {
@@ -26,13 +26,13 @@ export const styles = StyleSheet.create({
         backgroundColor: '#31363F',
         width: '95%',
         height: 50,
-        borderRadius: 15,
-        margin: 10,
+        borderRadius: 10,
+        margin: 3,
     },
     incomeText: {
         fontSize: 20,
         textAlign: "center",
-        backgroundColor: '#31363F',
+        backgroundColor: 'transparent',
         textAlignVertical: "center",
         borderRadius: 10,
         width: "40%"
@@ -40,7 +40,7 @@ export const styles = StyleSheet.create({
     incomeAmountButton: {
         position: "relative",
         backgroundColor: "#219C90",
-        width: "40%",
+        width: "90%",
         height: 40,
         margin: 5,
         borderRadius: 10,
@@ -52,7 +52,7 @@ export const styles = StyleSheet.create({
         textAlignVertical: "center",
     },
     pickerContainer: {
-        width: '60%',
+        width: '80%',
         height: 50,
         alignSelf: 'center',
         margin: 10,
@@ -60,8 +60,11 @@ export const styles = StyleSheet.create({
         marginBottom: 20,
     },
     textAmount: {
-        fontSize: 18,
+        fontSize: 20,
+        height: 40,
+        textAlign: "center",
         color: '#A6F576',
+        margin: 5,
         textAlignVertical: "center",
     },
 })

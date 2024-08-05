@@ -26,7 +26,18 @@ export function EditSpend({
     return (
         <Pressable
             onPress={() => handleEdit({ id, service, date, type, amount, description })}
-            style={{ width: 50, height: 50, backgroundColor: "#219C90", borderRadius: 15, justifyContent: "center", alignItems: "center", overflow: "hidden" }}
+            style={{
+                width: "10%",
+                height: "54%",
+                backgroundColor: "#219C90",
+                borderRadius: 10,
+                justifyContent: "center",
+                alignItems: "center",
+                overflow: "hidden",
+                margin: 3,
+                maxHeight: 30,
+                maxWidth: 30,
+            }}
         >
             <ThemedView style={{ backgroundColor: "transparent", width: "auto", height: "auto" }}>
                 <FontAwesome5 name="edit" size={18} color="white" />

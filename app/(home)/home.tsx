@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { router } from 'expo-router';
 import { Picker } from '@react-native-picker/picker';
 
@@ -20,6 +20,10 @@ import { useYearAndMonthContext } from '@/context/YearAndMonthProvider';
 import { styles, pickerStyles } from './styles';
 
 
+
+
+
+
 const Home = () => {
     const {
         selectedYear,
@@ -27,7 +31,6 @@ const Home = () => {
         setSelectedYear,
         setSelectedMonth,
     } = useYearAndMonthContext();
-
 
 
     return (

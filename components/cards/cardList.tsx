@@ -20,8 +20,8 @@ export function CardList({
         <ThemedView style={styles.row}>
             <ThemedText style={styles.textMonth} >{rowText}</ThemedText>
             <ThemedView style={styles.spendsIncomeRowContainer}>
-                <ThemedText style={styles.textSpendAmount}>${spend} </ThemedText>
-                <ThemedText style={styles.textAmount}>${amount} </ThemedText>
+                <ThemedText style={styles.textSpendAmount}>{spend} </ThemedText>
+                <ThemedText style={styles.textAmount}>{amount} </ThemedText>
             </ThemedView>
         </ThemedView>
     )

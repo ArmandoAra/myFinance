@@ -5,6 +5,7 @@ import { ThemedView } from '../ThemedView';
 
 import { Ionicons } from '@expo/vector-icons';
 import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
+import { z } from 'zod';
 
 export function SpendInfo({ service, date, type, description, }: {
     service: string;
@@ -16,37 +17,38 @@ export function SpendInfo({ service, date, type, description, }: {
 
     const [showDescription, setShowDescription] = React.useState(false);
 
-    return (<ThemedView style={styles.container}>
-        <ThemedView style={styles.typeContainer}>
-            <ThemedView style={styles.typeTextContainer}>
-                <AutoSizeText
-                    fontSize={12}
-                    mode={ResizeTextMode.max_lines}
-                    numberOfLines={1}
-                    style={styles.typeText}
-                >
-                    {type}
-                </AutoSizeText>
-            </ThemedView>
-            <ThemedView style={styles.serviceAndDateContainer}>
-                <ThemedText style={styles.serviceText}>{service}</ThemedText>
-                <ThemedText style={styles.dateText}>{new Date(date).toDateString()}</ThemedText>
-            </ThemedView>
+    return (
+        <ThemedView style={styles.container}>
+            <ThemedView style={styles.typeContainer}>
+                <ThemedView style={styles.typeTextContainer}>
+                    <AutoSizeText
+                        fontSize={12}
+                        mode={ResizeTextMode.max_lines}
+                        numberOfLines={1}
+                        style={styles.typeText}
+                    >
+                        {type}
+                    </AutoSizeText>
+                </ThemedView>
+                <ThemedView style={styles.serviceAndDateContainer}>
+                    <ThemedText style={styles.serviceText}>{service}</ThemedText>
+                    <ThemedText style={styles.dateText}>{new Date(date).toDateString()}</ThemedText>
+                </ThemedView>
 
-            {description.length > 0 &&
-                <Pressable
-                    style={styles.showDescription}
-                    onPress={() => setShowDescription(!showDescription)}
-                >
-                    <Ionicons name="information-circle-outline" size={24} color="white" />
-                </Pressable>}
-        </ThemedView>
-        {showDescription &&
-            <ThemedView style={styles.descriptionContainer}>
-                <ThemedText style={styles.description}>{description}</ThemedText>
+                {description.length > 0 &&
+                    <Pressable
+                        style={styles.showDescription}
+                        onPress={() => setShowDescription(!showDescription)}
+                    >
+                        <Ionicons name="information-circle-outline" size={24} color="white" />
+                    </Pressable>}
             </ThemedView>
-        }
-    </ThemedView>
+            {showDescription &&
+                <ThemedView style={styles.descriptionContainer}>
+                    <ThemedText style={styles.description}>{description}</ThemedText>
+                </ThemedView>
+            }
+        </ThemedView>
     );
 }
 
@@ -61,6 +63,7 @@ const styles = StyleSheet.create({
         margin: 5,
         width: '60%',
         borderRadius: 10,
+        height: "auto",
         position: 'relative',
     },
     editcontainer: {
@@ -73,13 +76,16 @@ const styles = StyleSheet.create({
     typeContainer: {
         width: "100%",
         flexDirection: "row",
+        justifyContent: "space-between",
         overflow: "hidden",
-        borderRadius: 15
+        borderRadius: 15,
+        alignContent: "center",
+        alignItems: "center",
     },
     typeTextContainer: {
         backgroundColor: "#45474B",
-        width: 50,
-        height: 50,
+        width: 40,
+        height: "100%",
         alignItems: "center",
         justifyContent: "center",
         display: "flex",
@@ -91,14 +97,13 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: "white",
         padding: 2,
-
         textAlignVertical: "center",
         textAlign: "center"
     },
     serviceAndDateContainer: {
         flexDirection: "column",
         margin: "auto",
-        width: "75%",
+        width: "65%",
     },
     dateText: {
         fontSize: 10,
@@ -124,7 +129,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#219C90",
         width: 30,
         height: 30,
-        paddingTop: 3,
+        paddingTop: 0,
         borderBottomStartRadius: 15,
         borderBottomLeftRadius: 15,
         textAlign: 'center',
@@ -133,11 +138,12 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
         backgroundColor: "transparent",
-        borderRadius: 15, justifyContent: "center",
+        borderRadius: 15,
         alignItems: "center",
         overflow: "hidden",
         position: "absolute",
-        right: 0
+        right: -10,
+        top: 0,
     },
     descriptionContainer: {
         width: "100%",

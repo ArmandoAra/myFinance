@@ -25,6 +25,7 @@ import { Amount } from '@/components/spendCard/amount';
 
 //Interfaces
 import { Spend } from '@/constants/interfaces';
+import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
 
 
 
@@ -102,7 +103,7 @@ function MonthScreen() {
         <SafeAreaView  >
             <ThemedView style={styles.container}>
                 <ThemedView style={styles.headerContainer}>
-                    <ThemedText style={styles.listHeader}>Expences from {selectedMonth}</ThemedText>
+                    <ThemedText style={styles.listHeader}>Month: {selectedMonth}</ThemedText>
                 </ThemedView>
                 <ThemedView>
 
@@ -110,12 +111,13 @@ function MonthScreen() {
                     <ThemedView
                         style={styles.incomeContainer}
                     >
-                        <ThemedText style={styles.incomeText}>Income: </ThemedText>
+
                         <Pressable
                             onPress={() => setShowIncomeInput(!showIncomeInput)}
                             style={styles.incomeAmountButton}>
                             <ThemedText style={styles.incomeAmountText} >
-                                {"$" + amount}
+                                <ThemedText style={styles.incomeText}>Income: </ThemedText>
+                                {amount}
                             </ThemedText>
                         </Pressable>
                     </ThemedView>
@@ -134,7 +136,7 @@ function MonthScreen() {
                     <ThemedView
                         style={styles.pickerContainer}
                     >
-                        {/* Select Month */}
+                        {/* Sort by */}
                         <Picker
                             placeholder={{
                                 label: ` ${selectedType}`,
@@ -187,7 +189,14 @@ function MonthScreen() {
                             width: "40%"
                         }}>Total: </ThemedText>
                         <Amount amount={calcSpendsByType({ spends, selectedType })} />
-                        <ThemedText style={styles.textAmount}>{amount - calcSpendsByType({ spends, selectedType: 'All Spends' })}</ThemedText>
+                        <AutoSizeText
+                            fontSize={20}
+                            mode={ResizeTextMode.max_lines}
+                            numberOfLines={1}
+                            style={styles.textAmount}
+                        >
+                            {amount - calcSpendsByType({ spends, selectedType: 'All Spends' })}
+                        </AutoSizeText>
                     </ThemedView>
 
                     {/* Add Button */}
@@ -220,10 +229,10 @@ export default MonthScreen;
 
 export const pickerStyles = StyleSheet.create({
     inputAndroid: {
-        fontSize: 22,
-        fontWeight: 'bold',
+        fontSize: 21,
+        fontStyle: 'italic',
         width: '100%',
-        height: 50,
+        height: 40,
         textAlign: 'center',
         borderRadius: 15,
         alignSelf: 'center',

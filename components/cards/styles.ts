@@ -3,7 +3,15 @@ import {
     rowHeaderColor,
 } from "../../constants/Colors";
 
+import { Dimensions } from 'react-native';
 
+const { height } = Dimensions.get('window');
+
+import { PixelRatio } from 'react-native';
+import { verticalScale } from '@/constants/dimensions';
+
+// Obtener el factor de escala
+const scale = PixelRatio.get();
 
 export const styles = StyleSheet.create({
     textHeaderContainer: {
@@ -15,21 +23,22 @@ export const styles = StyleSheet.create({
         borderTopLeftRadius: 7,
     },
     textHeader: {
-        fontSize: 20,
-        fontWeight: 'bold',
+        fontSize: 22,
+        fontStyle: "italic",
         marginVertical: 5,
     },
     container: {
         flexDirection: 'column',
         alignItems: 'center',
         width: '90%',
-        minHeight: "50%",
+        height: verticalScale(),
         marginBottom: 10,
         paddingBottom: 5,
         borderRadius: 8,
         borderWidth: 1,
         borderColor: '#ccc',
         gap: 2,
+
     },
     rowHeader: {
         flexDirection: 'row',

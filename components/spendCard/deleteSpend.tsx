@@ -31,10 +31,13 @@ export function DeleteSpend({
             onPress={handleDelete}
             style={{
                 backgroundColor: "#FC4100",
-                width: 50,
+                width: "10%",
+                height: "54%",
+                maxHeight: 30,
+                maxWidth: 30,
                 borderRadius: 10,
-                padding: 5,
-                height: 50,
+                margin: 3,
+
                 justifyContent: "center",
                 alignItems: "center",
             }}
