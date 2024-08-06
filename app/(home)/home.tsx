@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { PropsWithChildren, useEffect } from 'react'
 import { router } from 'expo-router';
 import { Picker } from '@react-native-picker/picker';
 
@@ -18,10 +18,7 @@ import { useYearAndMonthContext } from '@/context/YearAndMonthProvider';
 
 //Styles
 import { styles, pickerStyles } from './styles';
-
-
-
-
+import { HeaderImage } from '../index';
 
 
 const Home = () => {
@@ -37,6 +34,7 @@ const Home = () => {
 
         <ThemedView style={styles.container}>
             <ThemedView style={styles.headerContainer}>
+                <HeaderImage />
                 <ThemedText style={styles.title} >My Personal Finance</ThemedText>
             </ThemedView>
             <ThemedView style={styles.pickerMainContainer}>

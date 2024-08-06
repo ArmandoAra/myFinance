@@ -5,15 +5,16 @@ import { styles } from "./styles";
 
 
 
-export function CardList({
-    rowText,
-    spend,
-    amount
-}: {
-    rowText: string,
-    spend: number | undefined,
-    amount: number | undefined
-}) {
+export function
+    CardList({
+        rowText,
+        spend,
+        amount
+    }: {
+        rowText: string,
+        spend: number | undefined,
+        amount: number | undefined
+    }) {
 
 
     return (

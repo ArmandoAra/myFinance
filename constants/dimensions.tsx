@@ -27,13 +27,23 @@ export function verticalSpendListScale() {
     }
 }
 
-export function verticalMargin() {
+export function verticalHeader() {
     if (scale < 2.5) {
-        return 100;
+        return height * 0.10;
     } else if (scale >= 2.5 && scale < 3) {
-        return 60;
+        return height * 0.08;
     } else {
-        return 30;
+        return height * 0.06;
+    }
+}
+
+export function headerText() {
+    if (scale < 2.5) {
+        return { fontZize: 22 };
+    } else if (scale >= 2.5 && scale < 3) {
+        return { fontZize: 18 };
+    } else {
+        return { fontZize: 12 };
     }
 }
 

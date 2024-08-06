@@ -49,8 +49,8 @@ export const styles = StyleSheet.create({
     },
     spendsIncomeRowContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
-        width: '40%',
+        justifyContent: 'space-evenly',
+        width: '60%',
         gap: 10
     },
     row: {
@@ -64,6 +64,7 @@ export const styles = StyleSheet.create({
     textMonth: {
         fontSize: 18,
         color: '#219C90',
+        width: '40%',
     },
     textSpendAmount: {
         fontSize: 18,

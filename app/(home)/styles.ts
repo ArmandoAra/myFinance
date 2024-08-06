@@ -2,7 +2,7 @@ import { Dimensions, StyleSheet } from 'react-native';
 import { rowColorLighter } from '../../constants/Colors';
 
 const { width, height } = Dimensions.get('window');
-import { verticalScale } from '@/constants/dimensions';
+import { verticalHeader, verticalScale } from '@/constants/dimensions';
 
 
 //Home Styles
@@ -17,10 +17,12 @@ export const styles = StyleSheet.create({
     },
     headerContainer: {
         width: '100%',
-        height: height * 0.06,
+        height: verticalHeader(),
         backgroundColor: '#219C90',
         alignItems: 'center',
+        alignContent: 'center',
         justifyContent: 'center',
+        overflow: 'hidden',
     },
     pickerMainContainer: {
         flexDirection: "row",
@@ -48,7 +50,11 @@ export const styles = StyleSheet.create({
         marginHorizontal: 16,
     },
     title: {
+        position: 'absolute',
         fontSize: 32,
+        textShadowOffset: { width: 2, height: 2 },
+        textShadowRadius: 10,
+        textShadowColor: 'black',
         textAlignVertical: 'center',
         textAlign: 'center',
         paddingTop: 10,
@@ -68,6 +74,14 @@ export const styles = StyleSheet.create({
     iconContainer: {
         top: 10,
         right: 12,
+    },
+    headerImage: {
+        width: '100%',
+        height: 250,
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: -1,
     },
 })
 

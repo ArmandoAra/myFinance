@@ -41,6 +41,15 @@ export const loadDatabase = async () => {
     }
 }
 
+export function HeaderImage() {
+    return (
+        <Image source={require('../assets/images/topImage.jpg')}
+            style={styles.headerImage}
+            resizeMode='cover'
+        ></Image>
+    )
+}
+
 
 export default function App() {
     const [dbLoaded, setDbLoaded] = useState<boolean>(false);
@@ -71,10 +80,7 @@ export default function App() {
         <ParallaxScrollView
             headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
         >
-            <Image source={require('../assets/images/topImage.jpg')}
-                style={styles.headerImage}
-                resizeMode='cover'
-            ></Image>
+            <HeaderImage />
             <ThemedView style={styles.container}>
                 <ThemedText type="title" style={styles.title}>My Finance </ThemedText>
                 <ThemedText>{dbLoaded ?? "Base de datos cargada"}</ThemedText>
