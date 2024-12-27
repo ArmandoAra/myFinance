@@ -1,54 +1,120 @@
-# Welcome to your Expo app 👋
+# MyFinance App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+MyFinance es una aplicación móvil diseñada para ayudarte a gestionar tu presupuesto mensual y realizar un seguimiento de tus gastos. Desarrollada con React Native y Expo, esta app ofrece una experiencia sencilla y eficiente para mantener tus finanzas personales organizadas.
 
-## Get started
+## Características
 
-1. Install dependencies
+- **Gestión de Presupuesto:** Define un presupuesto mensual inicial.
+- **Seguimiento de Gastos:** Agrega gastos fácilmente y el monto se descontará automáticamente de tu presupuesto.
+- **Lista de Gastos:** Visualiza y organiza todos tus gastos registrados.
+- **Base de Datos Local:** Utiliza SQLite para almacenar datos de manera segura en tu dispositivo.
+- **Interfaz Personalizada:** Experiencia de usuario fluida con estilos modernos y funcionalidad reactiva.
+
+## Tecnologías Utilizadas
+
+- **React Native:** Para la interfaz de usuario.
+- **Expo:** Para la gestión del proyecto y compatibilidad multiplataforma.
+- **SQLite:** Base de datos local para almacenar la información del presupuesto y los gastos.
+- **TailwindCSS (NativeWind):** Para estilización eficiente.
+
+## Requisitos
+
+- Node.js 16 o superior
+- Expo CLI
+- Android SDK 51 o superior (para pruebas en dispositivos Android)
+
+## Instalación
+
+1. Clona este repositorio:
+
+   ```bash
+   git clone <URL-del-repositorio>
+   cd myfinance
+   ```
+
+2. Instala las dependencias:
 
    ```bash
    npm install
    ```
 
-2. Start the app
+3. Inicia el proyecto:
 
    ```bash
-    npx expo start
+   expo start
    ```
 
-In the output, you'll find options to open the app in a
+## Estructura del Proyecto
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+myfinance/
+├── assets/          # Recursos estáticos como imágenes y bases de datos
+├── components/      # Componentes reutilizables
+├── context/         # Proveedores de contexto para la gestión de estados globales
+├── db/              # Herramientas y configuración de la base de datos
+├── screens/         # Pantallas principales de la aplicación
+├── styles/          # Estilos globales
+└── App.tsx          # Punto de entrada principal
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Dependencias Principales
 
-## Learn more
+```json
+{
+  "expo": "~51.0.24",
+  "react-native": "0.74.3",
+  "expo-sqlite": "~14.0.6",
+  "@react-navigation/native": "^6.0.2",
+  "tailwindcss": "^3.3.2"
+}
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+Para más detalles, consulta el archivo `package.json`.
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Uso
 
-## Join the community
+1. Al abrir la aplicación, define tu presupuesto mensual inicial.
+2. Registra tus gastos a medida que los realices.
+3. Observa cómo se ajusta automáticamente tu presupuesto y organiza la lista de gastos.
 
-Join our community of developers creating universal apps.
+## Scripts Disponibles
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- `npm start`: Inicia el servidor de desarrollo.
+- `npm run android`: Ejecuta la aplicación en un emulador o dispositivo Android.
+- `npm run ios`: Ejecuta la aplicación en un emulador o dispositivo iOS.
+- `npm run web`: Inicia la aplicación en el navegador.
 
-<!-- Command to build apk with eas configuration -->
+## Funcionalidad de la Base de Datos
 
-eas build -p android --profile preview
+La app incluye una función para cargar la base de datos SQLite desde los activos del proyecto:
+
+```javascript
+export const loadDatabase = async () => {
+    const dbName = 'myFinance.db';
+    const dbAsset = require('@/assets/db/myFinance.db');
+    const dbUri = Asset.fromModule(dbAsset).uri;
+    const dbDir = FileSystem.documentDirectory + 'SQLite/' + dbName;
+
+    const dbInfo = await FileSystem.getInfoAsync(dbDir);
+
+    if (!dbInfo.exists) {
+        await FileSystem.makeDirectoryAsync(FileSystem.documentDirectory + 'SQLite/', { intermediates: true });
+        await FileSystem.downloadAsync(dbUri, dbDir);
+    }
+};
+```
+
+## Próximas Funcionalidades
+
+- Gráficas para visualizar gastos por categoría.
+- Sincronización en la nube para respaldo de datos.
+- Notificaciones de presupuesto excedido.
+
+## Licencia
+
+Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más información.
+
+---
+
+¡Gracias por usar MyFinance! Si tienes sugerencias o encuentras algún problema, no dudes en abrir un issue o contribuir al proyecto.
+
